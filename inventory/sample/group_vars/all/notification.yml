@@ -1,0 +1,7 @@
+## Retry parameters
+## Enable retries when trying to drain node
+# drain_retry_enabled: true
+# drain_max_reties: 15
+
+## Retry timeout in seconds
+# drain_retry_timeout: 120

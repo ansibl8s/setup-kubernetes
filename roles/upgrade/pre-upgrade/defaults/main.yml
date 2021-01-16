@@ -3,3 +3,9 @@ drain_grace_period: 300
 drain_timeout: 360s
 drain_pod_selector: ""
 drain_nodes: true
+
+## Retry parameters
+drain_retry_enabled: false
+drain_max_reties: 3
+# Retry timeout in seconds
+drain_retry_timeout: 10

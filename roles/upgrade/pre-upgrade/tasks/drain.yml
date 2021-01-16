@@ -1,0 +1,31 @@
+---
+- name: Group of tasks for a drain node with retries
+  block:
+    - name: Increment the retry count
+      set_fact:
+        notification_retry_count: "{{ 0 if notification_retry_count is undefined else notification_retry_count | int + 1 }}"
+
+    - name: Drain node
+      command: >-
+        {{ bin_dir }}/kubectl drain
+        --force
+        --ignore-daemonsets
+        --grace-period {{ drain_grace_period }}
+        --timeout {{ drain_timeout }}
+        --delete-local-data {{ kube_override_hostname|default(inventory_hostname) }}
+        {% if drain_pod_selector %}--pod-selector '{{ drain_pod_selector }}'{% endif %}
+      when:
+        - drain_nodes
+      delegate_to: "{{ groups['kube-master'][0] }}"
+  rescue:
+    - name: Check if retries left
+      fail:
+        msg: "Node can't drain pods. Please take a look on it {{ inventory_hostname }}"
+      when: notification_retry_count | int == drain_max_reties or not drain_retry_enabled
+
+    - name: Retry timeout
+      pause:
+        seconds: "{{ drain_retry_timeout }}"
+
+    - name: Import drain tasks one more time
+      include_tasks: drain.yml

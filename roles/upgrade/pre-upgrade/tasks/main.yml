@@ -53,17 +53,8 @@
         - drain_nodes
         - drain_pod_selector
 
-    - name: Drain node
-      command: >-
-        {{ bin_dir }}/kubectl drain
-        --force
-        --ignore-daemonsets
-        --grace-period {{ drain_grace_period }}
-        --timeout {{ drain_timeout }}
-        --delete-local-data {{ kube_override_hostname|default(inventory_hostname) }}
-        {% if drain_pod_selector %}--pod-selector '{{ drain_pod_selector }}'{% endif %}
-      when:
-        - drain_nodes
+    - name: Import drain tasks
+      import_tasks: drain.yml
   rescue:
     - name: Set node back to schedulable
       command: "{{ bin_dir }}/kubectl --kubeconfig /etc/kubernetes/admin.conf uncordon {{ inventory_hostname }}"
