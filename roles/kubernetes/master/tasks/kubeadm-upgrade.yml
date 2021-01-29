@@ -24,7 +24,10 @@
   retries: 3
   until: kubeadm_upgrade.rc == 0
   when: inventory_hostname == groups['kube-master']|first
-  failed_when: kubeadm_upgrade.rc != 0 and "field is immutable" not in kubeadm_upgrade.stderr
+  failed_when:
+    - kubeadm_upgrade.rc != 0
+    - '"field is immutable" not in kubeadm_upgrade.stderr'
+    - '"unable to create/update the DNS service" not in kubeadm_upgrade.stderr'
   environment:
     PATH: "{{ bin_dir }}:{{ ansible_env.PATH }}"
   notify: Master | restart kubelet
@@ -44,6 +47,8 @@
   failed_when:
     - kubeadm_upgrade.rc != 0
     - '"field is immutable" not in kubeadm_upgrade.stderr'
+    - '"unable to create/update the DNS service" not in kubeadm_upgrade.stderr'
+    - kubeadm_upgrade.stdout_lines | length > 1
   environment:
     PATH: "{{ bin_dir }}:{{ ansible_env.PATH }}"
   notify: Master | restart kubelet
@@ -71,4 +76,20 @@
   when:
     - kubeadm_scale_down_coredns_enabled
     - dns_mode not in ['coredns', 'coredns_dual']
+  changed_when: false
+
+- name: kubeadm | Remove kube-dns service if kubeadm upgrade created it
+  command: >-
+    {{ bin_dir }}/kubectl
+    --kubeconfig /etc/kubernetes/admin.conf
+    -n kube-system
+    delete svc kube-dns
+  register: delete_svc_kube_dns
+  retries: 6
+  delay: 2
+  until: delete_svc_kube_dns is succeeded
+  run_once: yes
+  when:
+    - dns_mode not in ['coredns', 'coredns_dual']
+  failed_when: false
   changed_when: false
