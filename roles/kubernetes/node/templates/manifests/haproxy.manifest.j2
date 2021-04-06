@@ -22,8 +22,6 @@ spec:
       requests:
         cpu: {{ loadbalancer_apiserver_cpu_requests }}
         memory: {{ loadbalancer_apiserver_memory_requests }}
-    securityContext:
-      privileged: true
     {% if loadbalancer_apiserver_healthcheck_port is defined -%}
     livenessProbe:
       httpGet:
