@@ -116,3 +116,12 @@ no_proxy_exclude_workers: false
 
 ## Check if access_ip responds to ping. Set false if your firewall blocks ICMP.
 # ping_access_ip: true
+
+## Manage SSH authorized_keys. If unset (default) does not change authorized_keys.
+## Make sure you have a strategy to avoid locking yourself out. For example:
+## - Leave an SSH connection open.
+## - Ensure you can change SSH authorized_keys via your cloud provider.
+# ssh_public_keys:
+#  - ssh-rsa AAAA admin1@example.com
+#  - ssh-rsa BBBB admin2@example.com
+#  - ssh-rsa CCCC admin3@example.com

@@ -18,6 +18,12 @@
     - { role: kubespray-defaults }
     - { role: bastion-ssh-config, tags: ["localhost", "bastion"] }
 
+- hosts: all
+  gather_facts: False
+  roles:
+    - role: ssh_public_keys
+      when: ssh_public_keys is defined
+
 - hosts: k8s-cluster:etcd
   strategy: linear
   any_errors_fatal: "{{ any_errors_fatal | default(true) }}"

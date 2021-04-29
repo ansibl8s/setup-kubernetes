@@ -1,0 +1,19 @@
+---
+- name: Ensure SSH config folder exists
+  file:
+    path: ~/.ssh
+    state: directory
+    recurse: true
+    mode: 0700
+  become: no
+  tags:
+    - ssh_public_keys
+
+- name: Configure SSH authorized_keys
+  template:
+    src: 'authorized_keys.j2'
+    dest: '~/.ssh/authorized_keys'
+  become: no
+  when: ssh_public_keys is defined
+  tags:
+    - ssh_public_keys
