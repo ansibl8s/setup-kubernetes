@@ -48,7 +48,7 @@ ROLES = ['all', 'kube_control_plane', 'kube_node', 'etcd', 'k8s_cluster',
          'calico_rr']
 PROTECTED_NAMES = ROLES
 AVAILABLE_COMMANDS = ['help', 'print_cfg', 'print_ips', 'print_hostnames',
-                      'load']
+                      'load', 'add']
 _boolean_states = {'1': True, 'yes': True, 'true': True, 'on': True,
                    '0': False, 'no': False, 'false': False, 'off': False}
 yaml = YAML()
@@ -82,22 +82,35 @@ class KubesprayInventory(object):
     def __init__(self, changed_hosts=None, config_file=None):
         self.config_file = config_file
         self.yaml_config = {}
-        if self.config_file:
+        loadPreviousConfig = False
+        # See whether there are any commands to process
+        if changed_hosts and changed_hosts[0] in AVAILABLE_COMMANDS:
+            if changed_hosts[0] == "add":
+                loadPreviousConfig = True
+                changed_hosts = changed_hosts[1:]
+            else:
+                self.parse_command(changed_hosts[0], changed_hosts[1:])
+                sys.exit(0)
+
+        # If the user wants to remove a node, we need to load the config anyway
+        if changed_hosts and changed_hosts[0][0] == "-":
+            loadPreviousConfig = True
+
+        if self.config_file and loadPreviousConfig:  # Load previous YAML file
             try:
                 self.hosts_file = open(config_file, 'r')
-                self.yaml_config = yaml.load_all(self.hosts_file)
-            except OSError:
-                pass
-
-        if changed_hosts and changed_hosts[0] in AVAILABLE_COMMANDS:
-            self.parse_command(changed_hosts[0], changed_hosts[1:])
-            sys.exit(0)
+                self.yaml_config = yaml.load(self.hosts_file)
+            except OSError as e:
+                # I am assuming we are catching "cannot open file" exceptions
+                print(e)
+                sys.exit(1)
 
         self.ensure_required_groups(ROLES)
 
         if changed_hosts:
             changed_hosts = self.range2ips(changed_hosts)
-            self.hosts = self.build_hostnames(changed_hosts)
+            self.hosts = self.build_hostnames(changed_hosts,
+                                              loadPreviousConfig)
             self.purge_invalid_hosts(self.hosts.keys(), PROTECTED_NAMES)
             self.set_all(self.hosts)
             self.set_k8s_cluster()
@@ -158,17 +171,29 @@ class KubesprayInventory(object):
         except IndexError:
             raise ValueError("Host name must end in an integer")
 
-    def build_hostnames(self, changed_hosts):
+    # Keeps already specified hosts,
+    # and adds or removes the hosts provided as an argument
+    def build_hostnames(self, changed_hosts, loadPreviousConfig=False):
         existing_hosts = OrderedDict()
         highest_host_id = 0
-        try:
-            for host in self.yaml_config['all']['hosts']:
-                existing_hosts[host] = self.yaml_config['all']['hosts'][host]
-                host_id = self.get_host_id(host)
-                if host_id > highest_host_id:
-                    highest_host_id = host_id
-        except Exception:
-            pass
+        # Load already existing hosts from the YAML
+        if loadPreviousConfig:
+            try:
+                for host in self.yaml_config['all']['hosts']:
+                    # Read configuration of an existing host
+                    hostConfig = self.yaml_config['all']['hosts'][host]
+                    existing_hosts[host] = hostConfig
+                    # If the existing host seems
+                    # to have been created automatically, detect its ID
+                    if host.startswith(HOST_PREFIX):
+                        host_id = self.get_host_id(host)
+                        if host_id > highest_host_id:
+                            highest_host_id = host_id
+            except Exception as e:
+                # I am assuming we are catching automatically
+                # created hosts without IDs
+                print(e)
+                sys.exit(1)
 
         # FIXME(mattymo): Fix condition where delete then add reuses highest id
         next_host_id = highest_host_id + 1
@@ -176,6 +201,7 @@ class KubesprayInventory(object):
 
         all_hosts = existing_hosts.copy()
         for host in changed_hosts:
+            # Delete the host from config the hostname/IP has a "-" prefix
             if host[0] == "-":
                 realhost = host[1:]
                 if self.exists_hostname(all_hosts, realhost):
@@ -184,6 +210,8 @@ class KubesprayInventory(object):
                 elif self.exists_ip(all_hosts, realhost):
                     self.debug("Marked {0} for deletion.".format(realhost))
                     self.delete_host_by_ip(all_hosts, realhost)
+            # Host/Argument starts with a digit,
+            # then we assume its an IP address
             elif host[0].isdigit():
                 if ',' in host:
                     ip, access_ip = host.split(',')
@@ -203,11 +231,15 @@ class KubesprayInventory(object):
                     next_host = subprocess.check_output(cmd, shell=True)
                     next_host = next_host.strip().decode('ascii')
                 else:
+                    # Generates a hostname because we have only an IP address
                     next_host = "{0}{1}".format(HOST_PREFIX, next_host_id)
                     next_host_id += 1
+                # Uses automatically generated node name
+                # in case we dont provide it.
                 all_hosts[next_host] = {'ansible_host': access_ip,
                                         'ip': ip,
                                         'access_ip': access_ip}
+            # Host/Argument starts with a letter, then we assume its a hostname
             elif host[0].isalpha():
                 if ',' in host:
                     try:
@@ -226,6 +258,7 @@ class KubesprayInventory(object):
                                        'access_ip': access_ip}
         return all_hosts
 
+    # Expand IP ranges into individual addresses
     def range2ips(self, hosts):
         reworked_hosts = []
 
@@ -394,9 +427,11 @@ help - Display this message
 print_cfg - Write inventory file to stdout
 print_ips - Write a space-delimited list of IPs from "all" group
 print_hostnames - Write a space-delimited list of Hostnames from "all" group
+add - Adds specified hosts into an already existing inventory
 
 Advanced usage:
-Add another host after initial creation: inventory.py 10.10.1.5
+Create new or overwrite old inventory file: inventory.py 10.10.1.5
+Add another host after initial creation: inventory.py add 10.10.1.6
 Add range of hosts: inventory.py 10.10.1.3-10.10.1.5
 Add hosts with different ip and access ip: inventory.py 10.0.0.1,192.168.10.1 10.0.0.2,192.168.10.2 10.0.0.3,192.168.10.3
 Add hosts with a specific hostname, ip, and optional access ip: first,10.0.0.1,192.168.10.1 second,10.0.0.2 last,10.0.0.3

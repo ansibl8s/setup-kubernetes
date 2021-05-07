@@ -67,23 +67,14 @@ class TestInventory(unittest.TestCase):
             self.assertRaisesRegex(ValueError, "Host name must end in an",
                                    self.inv.get_host_id, hostname)
 
-    def test_build_hostnames_add_one(self):
-        changed_hosts = ['10.90.0.2']
-        expected = OrderedDict([('node1',
-                                 {'ansible_host': '10.90.0.2',
-                                  'ip': '10.90.0.2',
-                                  'access_ip': '10.90.0.2'})])
-        result = self.inv.build_hostnames(changed_hosts)
-        self.assertEqual(expected, result)
-
     def test_build_hostnames_add_duplicate(self):
         changed_hosts = ['10.90.0.2']
-        expected = OrderedDict([('node1',
+        expected = OrderedDict([('node3',
                                  {'ansible_host': '10.90.0.2',
                                   'ip': '10.90.0.2',
                                   'access_ip': '10.90.0.2'})])
         self.inv.yaml_config['all']['hosts'] = expected
-        result = self.inv.build_hostnames(changed_hosts)
+        result = self.inv.build_hostnames(changed_hosts, True)
         self.assertEqual(expected, result)
 
     def test_build_hostnames_add_two(self):
@@ -96,6 +87,30 @@ class TestInventory(unittest.TestCase):
                        'ip': '10.90.0.3',
                        'access_ip': '10.90.0.3'})])
         self.inv.yaml_config['all']['hosts'] = OrderedDict()
+        result = self.inv.build_hostnames(changed_hosts)
+        self.assertEqual(expected, result)
+
+    def test_build_hostnames_add_three(self):
+        changed_hosts = ['10.90.0.2', '10.90.0.3', '10.90.0.4']
+        expected = OrderedDict([
+            ('node1', {'ansible_host': '10.90.0.2',
+                       'ip': '10.90.0.2',
+                       'access_ip': '10.90.0.2'}),
+            ('node2', {'ansible_host': '10.90.0.3',
+                       'ip': '10.90.0.3',
+                       'access_ip': '10.90.0.3'}),
+            ('node3', {'ansible_host': '10.90.0.4',
+                       'ip': '10.90.0.4',
+                       'access_ip': '10.90.0.4'})])
+        result = self.inv.build_hostnames(changed_hosts)
+        self.assertEqual(expected, result)
+
+    def test_build_hostnames_add_one(self):
+        changed_hosts = ['10.90.0.2']
+        expected = OrderedDict([('node1',
+                                 {'ansible_host': '10.90.0.2',
+                                  'ip': '10.90.0.2',
+                                  'access_ip': '10.90.0.2'})])
         result = self.inv.build_hostnames(changed_hosts)
         self.assertEqual(expected, result)
 
@@ -113,7 +128,24 @@ class TestInventory(unittest.TestCase):
             ('node2', {'ansible_host': '10.90.0.3',
                        'ip': '10.90.0.3',
                        'access_ip': '10.90.0.3'})])
-        result = self.inv.build_hostnames(changed_hosts)
+        result = self.inv.build_hostnames(changed_hosts, True)
+        self.assertEqual(expected, result)
+
+    def test_build_hostnames_delete_by_hostname(self):
+        changed_hosts = ['-node1']
+        existing_hosts = OrderedDict([
+            ('node1', {'ansible_host': '10.90.0.2',
+                       'ip': '10.90.0.2',
+                       'access_ip': '10.90.0.2'}),
+            ('node2', {'ansible_host': '10.90.0.3',
+                       'ip': '10.90.0.3',
+                       'access_ip': '10.90.0.3'})])
+        self.inv.yaml_config['all']['hosts'] = existing_hosts
+        expected = OrderedDict([
+            ('node2', {'ansible_host': '10.90.0.3',
+                       'ip': '10.90.0.3',
+                       'access_ip': '10.90.0.3'})])
+        result = self.inv.build_hostnames(changed_hosts, True)
         self.assertEqual(expected, result)
 
     def test_exists_hostname_positive(self):
@@ -313,7 +345,7 @@ class TestInventory(unittest.TestCase):
         self.assertRaisesRegex(Exception, "Range of ip_addresses isn't valid",
                                self.inv.range2ips, host_range)
 
-    def test_build_hostnames_different_ips_add_one(self):
+    def test_build_hostnames_create_with_one_different_ips(self):
         changed_hosts = ['10.90.0.2,192.168.0.2']
         expected = OrderedDict([('node1',
                                  {'ansible_host': '192.168.0.2',
@@ -322,17 +354,7 @@ class TestInventory(unittest.TestCase):
         result = self.inv.build_hostnames(changed_hosts)
         self.assertEqual(expected, result)
 
-    def test_build_hostnames_different_ips_add_duplicate(self):
-        changed_hosts = ['10.90.0.2,192.168.0.2']
-        expected = OrderedDict([('node1',
-                                 {'ansible_host': '192.168.0.2',
-                                  'ip': '10.90.0.2',
-                                  'access_ip': '192.168.0.2'})])
-        self.inv.yaml_config['all']['hosts'] = expected
-        result = self.inv.build_hostnames(changed_hosts)
-        self.assertEqual(expected, result)
-
-    def test_build_hostnames_different_ips_add_two(self):
+    def test_build_hostnames_create_with_two_different_ips(self):
         changed_hosts = ['10.90.0.2,192.168.0.2', '10.90.0.3,192.168.0.3']
         expected = OrderedDict([
             ('node1', {'ansible_host': '192.168.0.2',
@@ -341,6 +363,210 @@ class TestInventory(unittest.TestCase):
             ('node2', {'ansible_host': '192.168.0.3',
                        'ip': '10.90.0.3',
                        'access_ip': '192.168.0.3'})])
-        self.inv.yaml_config['all']['hosts'] = OrderedDict()
         result = self.inv.build_hostnames(changed_hosts)
+        self.assertEqual(expected, result)
+
+    def test_build_hostnames_create_with_three_different_ips(self):
+        changed_hosts = ['10.90.0.2,192.168.0.2',
+                         '10.90.0.3,192.168.0.3',
+                         '10.90.0.4,192.168.0.4']
+        expected = OrderedDict([
+            ('node1', {'ansible_host': '192.168.0.2',
+                       'ip': '10.90.0.2',
+                       'access_ip': '192.168.0.2'}),
+            ('node2', {'ansible_host': '192.168.0.3',
+                       'ip': '10.90.0.3',
+                       'access_ip': '192.168.0.3'}),
+            ('node3', {'ansible_host': '192.168.0.4',
+                       'ip': '10.90.0.4',
+                       'access_ip': '192.168.0.4'})])
+        result = self.inv.build_hostnames(changed_hosts)
+        self.assertEqual(expected, result)
+
+    def test_build_hostnames_overwrite_one_with_different_ips(self):
+        changed_hosts = ['10.90.0.2,192.168.0.2']
+        expected = OrderedDict([('node1',
+                                 {'ansible_host': '192.168.0.2',
+                                  'ip': '10.90.0.2',
+                                  'access_ip': '192.168.0.2'})])
+        existing = OrderedDict([('node5',
+                                 {'ansible_host': '192.168.0.5',
+                                  'ip': '10.90.0.5',
+                                  'access_ip': '192.168.0.5'})])
+        self.inv.yaml_config['all']['hosts'] = existing
+        result = self.inv.build_hostnames(changed_hosts)
+        self.assertEqual(expected, result)
+
+    def test_build_hostnames_overwrite_three_with_different_ips(self):
+        changed_hosts = ['10.90.0.2,192.168.0.2']
+        expected = OrderedDict([('node1',
+                                 {'ansible_host': '192.168.0.2',
+                                  'ip': '10.90.0.2',
+                                  'access_ip': '192.168.0.2'})])
+        existing = OrderedDict([
+            ('node3', {'ansible_host': '192.168.0.3',
+                       'ip': '10.90.0.3',
+                       'access_ip': '192.168.0.3'}),
+            ('node4', {'ansible_host': '192.168.0.4',
+                       'ip': '10.90.0.4',
+                       'access_ip': '192.168.0.4'}),
+            ('node5', {'ansible_host': '192.168.0.5',
+                       'ip': '10.90.0.5',
+                       'access_ip': '192.168.0.5'})])
+        self.inv.yaml_config['all']['hosts'] = existing
+        result = self.inv.build_hostnames(changed_hosts)
+        self.assertEqual(expected, result)
+
+    def test_build_hostnames_different_ips_add_duplicate(self):
+        changed_hosts = ['10.90.0.2,192.168.0.2']
+        expected = OrderedDict([('node3',
+                                 {'ansible_host': '192.168.0.2',
+                                  'ip': '10.90.0.2',
+                                  'access_ip': '192.168.0.2'})])
+        existing = expected
+        self.inv.yaml_config['all']['hosts'] = existing
+        result = self.inv.build_hostnames(changed_hosts, True)
+        self.assertEqual(expected, result)
+
+    def test_build_hostnames_add_two_different_ips_into_one_existing(self):
+        changed_hosts = ['10.90.0.3,192.168.0.3', '10.90.0.4,192.168.0.4']
+        expected = OrderedDict([
+            ('node2', {'ansible_host': '192.168.0.2',
+                       'ip': '10.90.0.2',
+                       'access_ip': '192.168.0.2'}),
+            ('node3', {'ansible_host': '192.168.0.3',
+                       'ip': '10.90.0.3',
+                       'access_ip': '192.168.0.3'}),
+            ('node4', {'ansible_host': '192.168.0.4',
+                       'ip': '10.90.0.4',
+                       'access_ip': '192.168.0.4'})])
+
+        existing = OrderedDict([
+            ('node2', {'ansible_host': '192.168.0.2',
+                       'ip': '10.90.0.2',
+                       'access_ip': '192.168.0.2'})])
+        self.inv.yaml_config['all']['hosts'] = existing
+        result = self.inv.build_hostnames(changed_hosts, True)
+        self.assertEqual(expected, result)
+
+    def test_build_hostnames_add_two_different_ips_into_two_existing(self):
+        changed_hosts = ['10.90.0.4,192.168.0.4', '10.90.0.5,192.168.0.5']
+        expected = OrderedDict([
+            ('node2', {'ansible_host': '192.168.0.2',
+                       'ip': '10.90.0.2',
+                       'access_ip': '192.168.0.2'}),
+            ('node3', {'ansible_host': '192.168.0.3',
+                       'ip': '10.90.0.3',
+                       'access_ip': '192.168.0.3'}),
+            ('node4', {'ansible_host': '192.168.0.4',
+                       'ip': '10.90.0.4',
+                       'access_ip': '192.168.0.4'}),
+            ('node5', {'ansible_host': '192.168.0.5',
+                       'ip': '10.90.0.5',
+                       'access_ip': '192.168.0.5'})])
+
+        existing = OrderedDict([
+            ('node2', {'ansible_host': '192.168.0.2',
+                       'ip': '10.90.0.2',
+                       'access_ip': '192.168.0.2'}),
+            ('node3', {'ansible_host': '192.168.0.3',
+                       'ip': '10.90.0.3',
+                       'access_ip': '192.168.0.3'})])
+        self.inv.yaml_config['all']['hosts'] = existing
+        result = self.inv.build_hostnames(changed_hosts, True)
+        self.assertEqual(expected, result)
+
+    def test_build_hostnames_add_two_different_ips_into_three_existing(self):
+        changed_hosts = ['10.90.0.5,192.168.0.5', '10.90.0.6,192.168.0.6']
+        expected = OrderedDict([
+            ('node2', {'ansible_host': '192.168.0.2',
+                       'ip': '10.90.0.2',
+                       'access_ip': '192.168.0.2'}),
+            ('node3', {'ansible_host': '192.168.0.3',
+                       'ip': '10.90.0.3',
+                       'access_ip': '192.168.0.3'}),
+            ('node4', {'ansible_host': '192.168.0.4',
+                       'ip': '10.90.0.4',
+                       'access_ip': '192.168.0.4'}),
+            ('node5', {'ansible_host': '192.168.0.5',
+                       'ip': '10.90.0.5',
+                       'access_ip': '192.168.0.5'}),
+            ('node6', {'ansible_host': '192.168.0.6',
+                       'ip': '10.90.0.6',
+                       'access_ip': '192.168.0.6'})])
+
+        existing = OrderedDict([
+            ('node2', {'ansible_host': '192.168.0.2',
+                       'ip': '10.90.0.2',
+                       'access_ip': '192.168.0.2'}),
+            ('node3', {'ansible_host': '192.168.0.3',
+                       'ip': '10.90.0.3',
+                       'access_ip': '192.168.0.3'}),
+            ('node4', {'ansible_host': '192.168.0.4',
+                       'ip': '10.90.0.4',
+                       'access_ip': '192.168.0.4'})])
+        self.inv.yaml_config['all']['hosts'] = existing
+        result = self.inv.build_hostnames(changed_hosts, True)
+        self.assertEqual(expected, result)
+
+    # Add two IP addresses into a config that has
+    # three already defined IP addresses. One of the IP addresses
+    # is a duplicate.
+    def test_build_hostnames_add_two_duplicate_one_overlap(self):
+        changed_hosts = ['10.90.0.4,192.168.0.4', '10.90.0.5,192.168.0.5']
+        expected = OrderedDict([
+            ('node2', {'ansible_host': '192.168.0.2',
+                       'ip': '10.90.0.2',
+                       'access_ip': '192.168.0.2'}),
+            ('node3', {'ansible_host': '192.168.0.3',
+                       'ip': '10.90.0.3',
+                       'access_ip': '192.168.0.3'}),
+            ('node4', {'ansible_host': '192.168.0.4',
+                       'ip': '10.90.0.4',
+                       'access_ip': '192.168.0.4'}),
+            ('node5', {'ansible_host': '192.168.0.5',
+                       'ip': '10.90.0.5',
+                       'access_ip': '192.168.0.5'})])
+
+        existing = OrderedDict([
+            ('node2', {'ansible_host': '192.168.0.2',
+                       'ip': '10.90.0.2',
+                       'access_ip': '192.168.0.2'}),
+            ('node3', {'ansible_host': '192.168.0.3',
+                       'ip': '10.90.0.3',
+                       'access_ip': '192.168.0.3'}),
+            ('node4', {'ansible_host': '192.168.0.4',
+                       'ip': '10.90.0.4',
+                       'access_ip': '192.168.0.4'})])
+        self.inv.yaml_config['all']['hosts'] = existing
+        result = self.inv.build_hostnames(changed_hosts, True)
+        self.assertEqual(expected, result)
+
+    # Add two duplicate IP addresses into a config that has
+    # three already defined IP addresses
+    def test_build_hostnames_add_two_duplicate_two_overlap(self):
+        changed_hosts = ['10.90.0.3,192.168.0.3', '10.90.0.4,192.168.0.4']
+        expected = OrderedDict([
+            ('node2', {'ansible_host': '192.168.0.2',
+                       'ip': '10.90.0.2',
+                       'access_ip': '192.168.0.2'}),
+            ('node3', {'ansible_host': '192.168.0.3',
+                       'ip': '10.90.0.3',
+                       'access_ip': '192.168.0.3'}),
+            ('node4', {'ansible_host': '192.168.0.4',
+                       'ip': '10.90.0.4',
+                       'access_ip': '192.168.0.4'})])
+
+        existing = OrderedDict([
+            ('node2', {'ansible_host': '192.168.0.2',
+                       'ip': '10.90.0.2',
+                       'access_ip': '192.168.0.2'}),
+            ('node3', {'ansible_host': '192.168.0.3',
+                       'ip': '10.90.0.3',
+                       'access_ip': '192.168.0.3'}),
+            ('node4', {'ansible_host': '192.168.0.4',
+                       'ip': '10.90.0.4',
+                       'access_ip': '192.168.0.4'})])
+        self.inv.yaml_config['all']['hosts'] = existing
+        result = self.inv.build_hostnames(changed_hosts, True)
         self.assertEqual(expected, result)
