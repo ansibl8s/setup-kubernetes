@@ -19,7 +19,7 @@
 ```git config --global status.submoduleSummary true```
 
 4. Add *original* kubespray repo as upstream:
-```git remote add upstream https://github.com/kubernetes-sigs/kubespray.git```
+```cd kubespray && git remote add upstream https://github.com/kubernetes-sigs/kubespray.git```
 
 5. Sync your master branch with upstream:
 
@@ -34,7 +34,7 @@
 ```git checkout -b work```
     ***Never*** use master branch of your repository for your commits.
 
-7. Modify path to library and roles in your ansible.cfg file (role naming should be uniq, you may have to rename your existent roles if they have same names as kubespray project):
+7. Modify path to library and roles in your ansible.cfg file (role naming should be unique, you may have to rename your existent roles if they have same names as kubespray project):
 
    ```ini
    ...
