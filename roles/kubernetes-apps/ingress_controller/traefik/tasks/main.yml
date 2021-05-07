@@ -1,0 +1,60 @@
+---
+
+- name: TRAEFIK Ingress Controller | Create addon dir
+  file:
+    path: "{{ kube_config_dir }}/addons/traefik"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when:
+  - inventory_hostname == groups['kube-master'][0]
+
+- name: TRAEFIK Ingress Controller | Templates list
+  set_fact:
+    traefik_templates:
+    - { name: 00-namespace, file: 00-namespace.yml, type: ns }
+    - { name: sa-traefik, file: sa-traefik.yml, type: sa }
+    - { name: crd-traefik, file: crd-traefik.yml, type: customresourcedefinition }
+    - { name: clusterrole-traefik, file: clusterrole-traefik.yml, type: clusterrole }
+    - { name: clusterrolebinding-traefik, file: clusterrolebinding-traefik.yml, type: clusterrolebinding }
+    - { name: ds-traefik, file: ds-traefik.yml, type: ds }
+    traefik_templates_tls:
+    - { name: cm-traefik, file: cm-traefik.yml, type: cm }
+    - { name: secret-traefik, file: secret-traefik.yml, type: secret }
+    traefik_templates_for_psp:
+    - { name: psp-traefik, file: psp-traefik.yml, type: podsecuritypolicy }
+
+- name: TRAEFIK Ingress Controller | Append extra templates to TRAEFIK Ingress Templates list for PodSecurityPolicy
+  set_fact:
+    traefik_templates: "{{ traefik_templates_for_psp + traefik_templates }}"
+  when:
+  - podsecuritypolicy_enabled
+  - traefik_host_network
+- name: TRAEFIK Ingress Controller | Append extra templates to TRAEFIK Ingress Templates list for Custom Certificate
+  set_fact:
+    traefik_templates: "{{ traefik_templates + traefik_templates_tls }}"
+  when:
+  - traefik_ingress_tls_chain | default(False)
+  - traefik_ingress_tls_key | default(False)
+
+- name: TRAEFIK Ingress Controller | Create manifests
+  template:
+    src: "{{ item.file }}.j2"
+    dest: "{{ kube_config_dir }}/addons/traefik/{{ item.file }}"
+  with_items: "{{ traefik_templates }}"
+  register: traefik_manifests
+  when:
+  - inventory_hostname == groups['kube-master'][0]
+
+- name: TRAEFIK Ingress Controller | Apply manifests
+  kube:
+    name: "{{ item.item.name }}"
+    namespace: "{{ traefik_namespace }}"
+    kubectl: "{{ bin_dir }}/kubectl"
+    resource: "{{ item.item.type }}"
+    filename: "{{ kube_config_dir }}/addons/traefik/{{ item.item.file }}"
+    state: "latest"
+  with_items: "{{ traefik_manifests.results }}"
+  when:
+  - inventory_hostname == groups['kube-master'][0]

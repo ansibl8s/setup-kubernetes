@@ -112,6 +112,27 @@ ingress_publish_status_address: ""
 #   - --default-ssl-certificate=default/foo-tls
 # ingress_nginx_class: nginx
 
+# Traefik ingress controller deployment
+ingress_traefik_enabled: false
+# traefik_namespace: "ingress-traefik"
+#  traefik_tolerations:
+#    - key: "node-role.kubernetes.io/master"
+#      operator: "Equal"
+#      value: ""
+#      effect: "NoSchedule"
+# traefik_host_network: false
+# traefik_nodeselector:
+#   kubernetes.io/os: "linux"
+# traefik_tolerations: []
+# traefik_ingress_tls_certbot_email: foo@bar.com
+# traefik_ingress_tls_certbot_use_staging: false
+# traefik_ingress_tls_chain: "{{ lookup('file', playbook_dir ~ '/my-traefik-ingress-server-chain.crt') }}"
+# traefik_ingress_tls_key: "{{ lookup('file', playbook_dir ~ '/my-traefik-ingress-server.key') }}"
+# traefik_insecure_port: 80
+# traefik_secure_port: 443
+# traefik_dashboard_port: 8100
+# traefik_metrics_port: 10254
+
 # ambassador ingress controller deployment
 ingress_ambassador_enabled: false
 # ingress_ambassador_namespace: "ambassador"

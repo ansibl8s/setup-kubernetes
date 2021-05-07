@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: traefik
+  namespace: {{ traefik_namespace }}
+  labels:
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/part-of: traefik

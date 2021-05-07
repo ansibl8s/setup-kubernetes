@@ -1,0 +1,45 @@
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: ingress-traefik
+  annotations:
+    seccomp.security.alpha.kubernetes.io/defaultProfileName:  'runtime/default'
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'runtime/default'
+{% if apparmor_enabled %}
+    apparmor.security.beta.kubernetes.io/defaultProfileName:  'runtime/default'
+    apparmor.security.beta.kubernetes.io/allowedProfileNames: 'runtime/default'
+{% endif %}
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+spec:
+  allowPrivilegeEscalation: false
+  forbiddenSysctls:
+  - '*'
+  fsGroup:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+  hostNetwork: true
+  hostPorts:
+  - min: 0
+    max: 65535
+  requiredDropCapabilities:
+  - ALL
+  runAsUser:
+    rule: MustRunAsNonRoot
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+  volumes:
+  - configMap
+  - emptyDir
+  - projected
+  - secret
+  - downwardAPI
+  - persistentVolumeClaim

@@ -492,6 +492,8 @@ rbd_provisioner_image_repo: "{{ quay_image_repo }}/external_storage/rbd-provisio
 rbd_provisioner_image_tag: "v2.1.1-k8s1.11"
 local_path_provisioner_image_repo: "{{ docker_image_repo }}/rancher/local-path-provisioner"
 local_path_provisioner_image_tag: "v0.0.19"
+ingress_traefik_image_repo: "{{ docker_image_repo }}/traefik"
+ingress_traefik_image_tag: "v2.3"
 ingress_nginx_controller_image_repo: "{{ kube_image_repo }}/ingress-nginx/controller"
 ingress_nginx_controller_image_tag: "v0.43.0"
 ingress_ambassador_image_repo: "{{ quay_image_repo }}/datawire/ambassador-operator"
@@ -1014,6 +1016,15 @@ downloads:
     sha256: "{{ local_path_provisioner_digest_checksum|default(None) }}"
     groups:
     - kube_node
+
+  ingress_traefik_controller:
+    enabled: "{{ ingress_traefik_enabled }}"
+    container: true
+    repo: "{{ ingress_traefik_image_repo }}"
+    tag: "{{ ingress_traefik_image_tag }}"
+    sha256: "{{ ingress_traefik_digest_checksum|default(None) }}"
+    groups:
+    - kube-node
 
   ingress_nginx_controller:
     enabled: "{{ ingress_nginx_enabled }}"

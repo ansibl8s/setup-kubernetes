@@ -1,0 +1,131 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: traefik
+  namespace: {{ traefik_namespace }}
+  labels:
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/part-of: traefik
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: traefik
+      app.kubernetes.io/part-of: traefik
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: traefik
+        app.kubernetes.io/part-of: traefik
+      annotations:
+        prometheus.io/port: "{{ traefik_metrics_port }}"
+        prometheus.io/scrape: "true"
+    spec:
+      containers:
+      - args:
+        - --accesslog=true
+        - --api.dashboard=true
+        - --entryPoints.metrics.address=:{{ traefik_metrics_port }}/tcp
+        - --entryPoints.traefik.address=:8100/tcp
+        - --entryPoints.web.address=:8080/tcp
+        - --entryPoints.websecure.address=:8443/tcp
+        - --entryPoints.websecure.http.tls=true
+        - --log.level=INFO
+        - --metrics.prometheus=true
+        - --metrics.prometheus.entrypoint=metrics
+        - --metrics.prometheus.buckets=0.1,0.3,1.2,5.0
+        - --ping=true
+{% if traefik_ingress_tls_chain and traefik_ingress_tls_key  %}
+        - --providers.file
+        - --providers.file.directory=/static
+{% elif traefik_ingress_tls_certbot_email %}
+        - --certificatesresolvers.default.acme.tlschallenge
+        - --certificatesresolvers.default.acme.email={{ traefik_ingress_tls_certbot_email }}
+        - --certificatesresolvers.default.acme.storage=/store/acme.json
+{% if traefik_ingress_tls_certbot_use_staging %}
+        - --certificatesresolvers.default.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+{% endif %}
+{% endif %}
+        - --providers.kubernetesingress
+        - --providers.kubernetescrd
+        - --providers.kubernetescrd.allowcrossnamespace=false
+        image: {{ ingress_traefik_image_repo }}:{{ ingress_traefik_image_tag }}
+        imagePullPolicy: {{ k8s_image_pull_policy }}
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          tcpSocket:
+            port: {{ traefik_metrics_port }}
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        name: traefik
+        ports:
+        - name: http
+          containerPort: 8080
+{% if traefik_host_network %}
+          hostPort: {{ traefik_insecure_port }}
+{% endif %}
+        - name: https
+          containerPort: 8443
+{% if traefik_host_network %}
+          hostPort: {{ traefik_secure_port }}
+{% endif %}
+        - name: dashboard
+          containerPort: 8100
+{% if traefik_host_network %}
+          hostPort: {{ traefik_dashboard_port }}
+{% endif %}
+        - name: metrics
+          containerPort: {{ traefik_metrics_port }}
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: {{ traefik_metrics_port }}
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        securityContext:
+          runAsUser: 1001
+{% if traefik_ingress_tls_chain and traefik_ingress_tls_key %}
+        volumeMounts:
+        - mountPath: /tls-secret
+          name: tls
+        - mountPath: /static
+          name: config
+{% elif traefik_ingress_tls_certbot_email %}
+        volumeMounts:
+        - mountPath: /store
+          name: certbot
+{% else %}
+        volumeMounts: []
+{% endif %}
+{% if traefik_nodeselector %}
+      nodeSelector:
+        {{ traefik_nodeselector | to_nice_yaml | indent(width=8) }}
+{%- endif %}
+      priorityClassName: {% if traefik_namespace == 'kube-system' %}system-node-critical{% else %}k8s-cluster-critical{% endif %}{{''}}
+      serviceAccountName: traefik
+{% if traefik_tolerations %}
+      tolerations:
+        {{ traefik_tolerations | to_nice_yaml(indent=2) | indent(width=8) }}
+{% endif %}
+{% if traefik_ingress_tls_chain and traefik_ingress_tls_key %}
+      volumes:
+      - configMap:
+          name: traefik
+        name: config
+      - name: tls
+        secret:
+          secretName: traefik-default-tls
+{% elif traefik_ingress_tls_certbot_email %}
+      volumes:
+      - emptyDir: {}
+        name: store
+{% else %}
+      volumes: []
+{% endif %}

@@ -1,0 +1,60 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ingress-traefik
+  labels:
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/part-of: traefik
+rules:
+{% if podsecuritypolicy_enabled and traefik_host_network %}
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - ingress-traefik
+  verbs:
+  - use
+{% endif %}
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - endpoints
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  - networking.k8s.io
+  resources:
+  - ingressclasses
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses/status
+  verbs:
+  - update
+- apiGroups:
+  - traefik.containo.us
+  resources:
+  - ingressroutes
+  - ingressroutetcps
+  - ingressrouteudps
+  - middlewares
+  - tlsoptions
+  - tlsstores
+  - traefikservices
+  verbs:
+  - get
+  - list
+  - watch
+

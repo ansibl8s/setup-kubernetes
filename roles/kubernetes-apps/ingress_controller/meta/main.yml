@@ -7,6 +7,13 @@ dependencies:
       - ingress-controller
       - ingress-nginx
 
+  - role: kubernetes-apps/ingress_controller/traefik
+    when: ingress_traefik_enabled
+    tags:
+      - apps
+      - ingress-traefik
+      - ingress-controller
+
   - role: kubernetes-apps/ingress_controller/ambassador
     when: ingress_ambassador_enabled
     tags:
