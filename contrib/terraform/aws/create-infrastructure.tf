@@ -61,11 +61,11 @@ resource "aws_instance" "bastion-server" {
 
   key_name = var.AWS_SSH_KEY_NAME
 
-  tags = merge(var.default_tags, map(
-    "Name", "kubernetes-${var.aws_cluster_name}-bastion-${count.index}",
-    "Cluster", var.aws_cluster_name,
-    "Role", "bastion-${var.aws_cluster_name}-${count.index}"
-  ))
+  tags = merge(var.default_tags, tomap({
+    Name    = "kubernetes-${var.aws_cluster_name}-bastion-${count.index}"
+    Cluster = var.aws_cluster_name
+    Role    = "bastion-${var.aws_cluster_name}-${count.index}"
+  }))
 }
 
 /*
@@ -87,11 +87,11 @@ resource "aws_instance" "k8s-master" {
   iam_instance_profile = module.aws-iam.kube_control_plane-profile
   key_name             = var.AWS_SSH_KEY_NAME
 
-  tags = merge(var.default_tags, map(
-    "Name", "kubernetes-${var.aws_cluster_name}-master${count.index}",
-    "kubernetes.io/cluster/${var.aws_cluster_name}", "member",
-    "Role", "master"
-  ))
+  tags = merge(var.default_tags, tomap({
+    Name                                            = "kubernetes-${var.aws_cluster_name}-master${count.index}"
+    "kubernetes.io/cluster/${var.aws_cluster_name}" = "member"
+    Role                                            = "master"
+  }))
 }
 
 resource "aws_elb_attachment" "attach_master_nodes" {
@@ -113,11 +113,11 @@ resource "aws_instance" "k8s-etcd" {
 
   key_name = var.AWS_SSH_KEY_NAME
 
-  tags = merge(var.default_tags, map(
-    "Name", "kubernetes-${var.aws_cluster_name}-etcd${count.index}",
-    "kubernetes.io/cluster/${var.aws_cluster_name}", "member",
-    "Role", "etcd"
-  ))
+  tags = merge(var.default_tags, tomap({
+    Name                                            = "kubernetes-${var.aws_cluster_name}-etcd${count.index}"
+    "kubernetes.io/cluster/${var.aws_cluster_name}" = "member"
+    Role                                            = "etcd"
+  }))
 }
 
 resource "aws_instance" "k8s-worker" {
@@ -134,11 +134,11 @@ resource "aws_instance" "k8s-worker" {
   iam_instance_profile = module.aws-iam.kube-worker-profile
   key_name             = var.AWS_SSH_KEY_NAME
 
-  tags = merge(var.default_tags, map(
-    "Name", "kubernetes-${var.aws_cluster_name}-worker${count.index}",
-    "kubernetes.io/cluster/${var.aws_cluster_name}", "member",
-    "Role", "worker"
-  ))
+  tags = merge(var.default_tags, tomap({
+    Name                                            = "kubernetes-${var.aws_cluster_name}-worker${count.index}"
+    "kubernetes.io/cluster/${var.aws_cluster_name}" = "member"
+    Role                                            = "worker"
+  }))
 }
 
 /*
