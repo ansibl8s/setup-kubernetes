@@ -53,7 +53,7 @@
   roles:
     - { role: kubespray-defaults }
     - { role: kubernetes/preinstall, tags: preinstall }
-    - { role: container-engine, tags: "container-engine", when: deploy_container_engine|default(true) }
+    - { role: container-engine, tags: "container-engine", when: deploy_container_engine }
     - { role: download, tags: download, when: "not skip_downloads" }
     - { role: etcd, tags: etcd, etcd_cluster_setup: false, when: "not etcd_kubeadm_enabled|default(false)" }
 

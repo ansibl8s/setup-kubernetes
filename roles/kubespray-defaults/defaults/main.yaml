@@ -230,6 +230,9 @@ kube_api_aggregator_routing: false
 # Profiling
 kube_profiling: false
 
+# Whether to deploy the container engine
+deploy_container_engine: inventory_hostname in groups['k8s-cluster'] or etcd_deployment_type != 'host'
+
 # Container for runtime
 container_manager: docker
 

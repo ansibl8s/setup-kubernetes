@@ -57,7 +57,7 @@
   serial: "{{ serial | default('20%') }}"
   roles:
     - { role: kubespray-defaults }
-    - { role: container-engine, tags: "container-engine", when: deploy_container_engine|default(true) }
+    - { role: container-engine, tags: "container-engine", when: deploy_container_engine }
 
 - hosts: etcd
   gather_facts: False
@@ -94,7 +94,7 @@
   roles:
     - { role: kubespray-defaults }
     - { role: upgrade/pre-upgrade, tags: pre-upgrade }
-    - { role: container-engine, tags: "container-engine", when: deploy_container_engine|default(true) }
+    - { role: container-engine, tags: "container-engine", when: deploy_container_engine }
     - { role: kubernetes/node, tags: node }
     - { role: kubernetes/control-plane, tags: master, upgrade_cluster_setup: true }
     - { role: kubernetes/client, tags: client }
@@ -125,7 +125,7 @@
   roles:
     - { role: kubespray-defaults }
     - { role: upgrade/pre-upgrade, tags: pre-upgrade }
-    - { role: container-engine, tags: "container-engine", when: deploy_container_engine|default(true) }
+    - { role: container-engine, tags: "container-engine", when: deploy_container_engine }
     - { role: kubernetes/node, tags: node }
     - { role: kubernetes/kubeadm, tags: kubeadm }
     - { role: kubernetes/node-label, tags: node-label }

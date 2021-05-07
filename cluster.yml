@@ -32,7 +32,7 @@
   roles:
     - { role: kubespray-defaults }
     - { role: kubernetes/preinstall, tags: preinstall }
-    - { role: "container-engine", tags: "container-engine", when: deploy_container_engine|default(true) }
+    - { role: "container-engine", tags: "container-engine", when: deploy_container_engine }
     - { role: download, tags: download, when: "not skip_downloads" }
 
 - hosts: etcd

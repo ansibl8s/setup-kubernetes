@@ -100,7 +100,7 @@
   when:
     - crictl.stat.exists
     - container_manager in ["crio", "containerd"]
-    - deploy_container_engine|default(true)
+    - deploy_container_engine
 
 - name: reset | stop and disable crio service
   service:
