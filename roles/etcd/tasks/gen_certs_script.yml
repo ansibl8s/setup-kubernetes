@@ -18,18 +18,6 @@
   when: inventory_hostname == groups['etcd'][0]
   delegate_to: "{{ groups['etcd'][0] }}"
 
-- name: "Gen_certs | create etcd cert dir (on {{ groups['etcd'][0] }})"
-  file:
-    path: "{{ etcd_cert_dir }}"
-    group: "{{ etcd_cert_group }}"
-    state: directory
-    owner: kube
-    recurse: yes
-    mode: 0700
-  run_once: yes
-  when: inventory_hostname == groups['etcd'][0]
-  delegate_to: "{{ groups['etcd'][0] }}"
-
 - name: Gen_certs | write openssl config
   template:
     src: "openssl.conf.j2"
