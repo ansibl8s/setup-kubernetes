@@ -128,12 +128,38 @@
   tags:
     - kube-proxy
 
-- name: Set ca.crt file permission
+- name: Display paths of all .crt files in dir
+  debug: msg={{ lookup('fileglob', '{{ kube_cert_dir }}/*.crt') }}
+- name: Display paths of all .key files in dir
+  debug: msg={{ lookup('fileglob', '{{ kube_cert_dir }}/*.key') }}
+
+- name: Find PKI certificate files
+  find:
+    paths: "{{ kube_cert_dir }}"
+    patterns: "*.crt"
+  register: pki_certificate_files
+
+- name: Set PKI certificate files permission
   file:
-    path: "{{ kube_cert_dir }}/ca.crt"
+    path: "{{ item.path }}"
     owner: root
     group: root
-    mode: "0644"
+    mode: 0644
+  with_items: "{{ pki_certificate_files.files }}"
+
+- name: Find PKI key files
+  find:
+    paths: "{{ kube_cert_dir }}"
+    patterns: "*.key"
+  register: pki_key_files
+
+- name: Set PKI key files permission
+  file:
+    path: "{{ item.path }}"
+    owner: root
+    group: root
+    mode: 0600
+  with_items: "{{ pki_key_files.files }}"
 
 - name: Restart all kube-proxy pods to ensure that they load the new configmap
   command: "{{ bin_dir }}/kubectl --kubeconfig {{ kube_config_dir }}/admin.conf delete pod -n kube-system -l k8s-app=kube-proxy --force --grace-period=0"
