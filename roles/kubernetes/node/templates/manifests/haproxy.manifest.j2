@@ -25,12 +25,14 @@ spec:
     {% if loadbalancer_apiserver_healthcheck_port is defined -%}
     livenessProbe:
       httpGet:
-        path: /healthz
+        host: 127.0.0.1
         port: {{ loadbalancer_apiserver_healthcheck_port }}
+        path: /healthz
     readinessProbe:
       httpGet:
-        path: /healthz
+        host: 127.0.0.1
         port: {{ loadbalancer_apiserver_healthcheck_port }}
+        path: /healthz
     {% endif -%}
     volumeMounts:
     - mountPath: /usr/local/etc/haproxy/

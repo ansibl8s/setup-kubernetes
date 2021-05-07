@@ -21,7 +21,7 @@ defaults
 
 {% if loadbalancer_apiserver_healthcheck_port is defined -%}
 frontend healthz
-  bind *:{{ loadbalancer_apiserver_healthcheck_port }}
+  bind 127.0.0.1:{{ loadbalancer_apiserver_healthcheck_port }}
   mode http
   monitor-uri /healthz
 {% endif %}
