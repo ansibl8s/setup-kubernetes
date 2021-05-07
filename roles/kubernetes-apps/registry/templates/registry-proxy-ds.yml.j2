@@ -33,4 +33,5 @@ spec:
           ports:
             - name: registry
               containerPort: 80
+              hostIP: 127.0.0.1
               hostPort: {{ registry_port }}
