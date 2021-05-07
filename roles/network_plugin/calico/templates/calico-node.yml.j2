@@ -259,6 +259,8 @@ spec:
               value: "true"
             - name: FELIX_IGNORELOOSERPF
               value: "{{ calico_node_ignorelooserpf }}"
+            - name: CALICO_MANAGE_CNI
+              value: "true"
 {% if calico_node_extra_envs is defined %}
 {% for key in calico_node_extra_envs %}
             - name: {{ key }}
@@ -309,6 +311,8 @@ spec:
             - name: xtables-lock
               mountPath: /run/xtables.lock
               readOnly: false
+            - mountPath: /host/etc/cni/net.d
+              name: cni-net-dir
 {% if typha_secure %}
             - name: typha-client
               mountPath: /etc/typha-client
