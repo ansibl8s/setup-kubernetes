@@ -1,0 +1,23 @@
+---
+- block:
+  - name: List services
+    service_facts:
+
+  - name: Disable service firewalld
+    systemd:
+      name: firewalld
+      state: stopped
+      enabled: no
+    when:
+      "'firewalld.service' in services"
+
+  - name: Disable service ufw
+    systemd:
+      name: ufw
+      state: stopped
+      enabled: no
+    when:
+      "'ufw.service' in services"
+
+  when:
+  - disable_service_firewall
