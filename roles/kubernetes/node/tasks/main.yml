@@ -114,6 +114,17 @@
   tags:
     - kube-proxy
 
+- name: Modprobe nf_conntrack
+  modprobe:
+    name: nf_conntrack
+    state: present
+  register: modprobe_nf_conntrack
+  ignore_errors: yes
+  when:
+    - kube_proxy_mode == 'ipvs'
+  tags:
+    - kube-proxy
+
 - name: Persist ip_vs modules
   copy:
     dest: /etc/modules-load.d/kube_proxy-ipvs.conf
@@ -124,6 +135,9 @@
       ip_vs_sh
       {% if modprobe_nf_conntrack_ipv4 is success -%}
       nf_conntrack_ipv4
+      {%-   endif -%}
+      {% if modprobe_nf_conntrack is success -%}
+      nf_conntrack
       {%-   endif -%}
   when: kube_proxy_mode == 'ipvs'
   tags:
