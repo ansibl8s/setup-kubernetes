@@ -57,6 +57,10 @@ resource "upcloud_server" "worker" {
    type = "public"
  }
 
+network_interface {
+   type = "utility"
+}
+
  # Include at least one public SSH key
  login {
    user = var.username
