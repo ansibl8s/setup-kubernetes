@@ -35,11 +35,12 @@
     ***Never*** use master branch of your repository for your commits.
 
 7. Modify path to library and roles in your ansible.cfg file (role naming should be uniq, you may have to rename your existent roles if they have same names as kubespray project):
+   If you hadroles in your existing ansible project before, you can add the path to those separated with `:`
 
    ```ini
    ...
-   library       = 3d/kubespray/library/
-   roles_path    = 3d/kubespray/roles/
+   library       = ./library/:3d/kubespray/library/
+   roles_path    = ./roles/:3d/kubespray/roles/
    ...
    ```
 
