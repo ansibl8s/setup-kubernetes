@@ -64,3 +64,6 @@
 # state instead of `new`.
 - include_tasks: refresh_config.yml
   when: is_etcd_master
+
+- include_tasks: refresh_permissions.yml
+  when: etcd_deployment_type == 'host'

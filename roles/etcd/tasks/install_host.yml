@@ -18,3 +18,21 @@
     - etcd
     - etcdctl
   when: etcd_cluster_setup
+
+- name: install | Create etcd data dir
+  file:
+    path: "{{ etcd_data_dir }}"
+    state: directory
+    owner: etcd
+    group: etcd
+    mode: 0700
+  when: etcd_cluster_setup and etcd_deployment_type == 'host'
+
+- name: install | Create etcd data dir | events
+  file:
+    path: "{{ etcd_events_data_dir }}"
+    state: directory
+    owner: etcd
+    group: etcd
+    mode: 0700
+  when: etcd_events_cluster_setup and etcd_deployment_type == 'host'

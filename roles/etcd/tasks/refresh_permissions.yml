@@ -1,0 +1,60 @@
+---
+- name: refresh permissions | check {{ etcd_data_dir }} permissions
+  shell: |
+    set -o pipefail && find {{ etcd_data_dir }} -user etcd | wc -l
+  args:
+    executable: /bin/bash
+  register: etcd_permission
+  changed_when: false
+  when: etcd_deployment_type == 'host' and etcd_cluster_setup
+  failed_when: etcd_permission.rc > 2
+
+- name: refresh permissions | check etcd service
+  shell: |
+    set -o pipefail && pgrep -u etcd | wc -l
+  args:
+    executable: /bin/bash
+  register: etcd_service
+  changed_when: false
+  when: etcd_deployment_type == 'host' and etcd_cluster_setup
+  failed_when: etcd_service.rc > 2
+
+- name: refresh permissions | etcd
+  shell: |
+    set -o pipefail && echo "refresh permissions etcd"
+  args:
+    executable: /bin/bash
+  when: (etcd_cluster_setup and etcd_permission.stdout == "0") or
+        (etcd_cluster_setup and etcd_service.stdout == "0")
+  notify:
+    - etcd | run systemd from etcd user
+
+- name: refresh permissions | check {{ etcd_events_data_dir }} permissions
+  shell: |
+    set -o pipefail && find {{ etcd_events_data_dir }} -user etcd | wc -l
+  args:
+    executable: /bin/bash
+  register: etcd_events_permission
+  changed_when: false
+  when: etcd_deployment_type == 'host' and etcd_events_cluster_setup
+  failed_when: etcd_permission.rc > 2
+
+- name: refresh permissions | check etcd-events service
+  shell: |
+    set -o pipefail && pgrep -u etcd | wc -l
+  args:
+    executable: /bin/bash
+  register: etcd_events_service
+  changed_when: false
+  when: etcd_deployment_type == 'host' and etcd_events_cluster_setup
+  failed_when: etcd_service.rc > 2
+
+- name: refresh permissions | etcd-events
+  shell: |
+    set -o pipefail && echo "refresh permissions etcd-events"
+  args:
+    executable: /bin/bash
+  when: (etcd_events_cluster_setup and etcd_events_permission.stdout == "0") or
+        (etcd_events_cluster_setup and etcd_events_service.stdout == "0")
+  notify:
+    - etcd-events | run systemd from etcd user

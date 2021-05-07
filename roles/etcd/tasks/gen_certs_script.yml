@@ -183,3 +183,13 @@
     owner: kube
     mode: "{{ etcd_cert_dir_mode }}"
     recurse: yes
+
+- name: Gen_certs | check certificate permissions | host
+  file:
+    path: "{{ etcd_config_dir }}"
+    group: "{{ etcd_cert_group }}"
+    state: directory
+    owner: etcd
+    mode: 0770
+    recurse: yes
+  when: etcd_deployment_type == 'host'

@@ -14,6 +14,23 @@
     - reload etcd-events
     - wait for etcd-events up
 
+- name: etcd | run systemd from etcd user
+  command: /bin/true
+  notify:
+    - Backup etcd data
+    - stop etcd
+    - etcd | set data permissions
+    - start etcd
+    - wait for etcd up
+
+- name: etcd-events | run systemd from etcd user
+  command: /bin/true
+  notify:
+    - stop etcd-events
+    - etcd-events | set data permissions
+    - start etcd-events
+    - wait for etcd-events up
+
 - import_tasks: backup.yml
 
 - name: etcd | reload systemd
@@ -57,3 +74,47 @@
 - name: set etcd_secret_changed
   set_fact:
     etcd_secret_changed: true
+
+- name: stop etcd
+  service:
+    name: etcd
+    state: stopped
+  when: etcd_deployment_type == 'host'
+
+- name: stop etcd-events
+  service:
+    name: etcd-events
+    state: stopped
+  when: etcd_deployment_type == 'host'
+
+- name: etcd | set data permissions
+  file:
+    path: "{{ etcd_data_dir }}"
+    state: directory
+    owner: etcd
+    group: etcd
+    mode: 0700
+    recurse: yes
+  when: etcd_deployment_type == 'host'
+
+- name: etcd-events | set data permissions
+  file:
+    path: "{{ etcd_events_data_dir }}"
+    state: directory
+    owner: etcd
+    group: etcd
+    mode: 0700
+    recurse: yes
+  when: etcd_deployment_type == 'host'
+
+- name: start etcd
+  service:
+    name: etcd
+    state: started
+  when: etcd_deployment_type == 'host'
+
+- name: start etcd-events
+  service:
+    name: etcd-events
+    state: started
+  when: etcd_deployment_type == 'host'
