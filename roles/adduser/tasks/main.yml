@@ -3,6 +3,7 @@
   group:
     name: "{{ user.group|default(user.name) }}"
     system: "{{ user.system|default(omit) }}"
+    gid: "{{ user.uid|default(omit) }}"
 
 - name: User | Create User
   user:
@@ -13,3 +14,4 @@
     shell: "{{ user.shell|default(omit) }}"
     name: "{{ user.name }}"
     system: "{{ user.system|default(omit) }}"
+    uid: "{{ user.uid|default(omit) }}"

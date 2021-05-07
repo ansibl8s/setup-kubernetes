@@ -6,3 +6,4 @@ addusers:
     system: yes
     group: "{{ kube_cert_group }}"
     createhome: no
+    uid: 1001

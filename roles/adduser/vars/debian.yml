@@ -6,6 +6,7 @@ addusers:
     home: "{{ etcd_data_dir }}"
     system: yes
     shell: /sbin/nologin
+    uid: 1000
 
   - name: kube
     comment: "Kubernetes user"
@@ -13,3 +14,4 @@ addusers:
     system: yes
     shell: /sbin/nologin
     group: "{{ kube_cert_group }}"
+    uid: 1001

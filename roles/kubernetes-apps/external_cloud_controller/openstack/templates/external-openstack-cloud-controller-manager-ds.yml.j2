@@ -30,7 +30,7 @@ spec:
         node-role.kubernetes.io/control-plane: ""
 {% endif %}
       securityContext:
-        runAsUser: 999
+        runAsUser: {{ addusers.kube.uid }}
       tolerations:
       - key: node.cloudprovider.kubernetes.io/uninitialized
         value: "true"
