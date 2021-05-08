@@ -1,4 +1,8 @@
-# Container image collecting script for offline deployment
+# Offline deployment
+
+## manage-offline-container-images.sh
+
+Container image collecting script for offline deployment
 
 This script has two features:
 (1) Get container images from an environment which is deployed online.
@@ -19,3 +23,21 @@ Step(2) can be operated with:
 ```shell
 manage-offline-container-images.sh   register
 ```
+
+## generate_list.sh
+
+This script generates the list of downloaded files and the list of container images by `roles/download/defaults/main.yml` file.
+
+Run this script will generates three files, all downloaded files url in files.list, all container images in images.list, all component version in generate.sh.
+
+```shell
+bash generate_list.sh
+tree temp
+temp
+├── files.list
+├── generate.sh
+└── images.list
+0 directories, 3 files
+```
+
+In some cases you may want to update some component version, you can edit `generate.sh` file, then run `bash generate.sh | grep 'https' > files.list` to update file.list or run `bash generate.sh | grep -v 'https'> images.list` to update images.list.
