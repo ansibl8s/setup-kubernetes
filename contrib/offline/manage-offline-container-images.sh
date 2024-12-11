@@ -36,7 +36,7 @@ function create_container_image_tar() {
 	mkdir  ${IMAGE_DIR}
 	cd     ${IMAGE_DIR}
 
-	sudo ${runtime} pull registry:latest
+	sudo -E ${runtime} pull registry:latest
 	sudo ${runtime} save -o registry-latest.tar registry:latest
 
 	while read -r image
@@ -45,7 +45,7 @@ function create_container_image_tar() {
 		set +e
 		for step in $(seq 1 ${RETRY_COUNT})
 		do
-			sudo ${runtime} pull ${image}
+			sudo -E ${runtime} pull ${image}
 			if [ $? -eq 0 ]; then
 				break
 			fi
