@@ -1,0 +1,8 @@
+---
+# Instance settings
+cloud_image: opensuse-leap-15
+mode: separate
+
+kube_network_plugin: calico
+
+container_manager: crio

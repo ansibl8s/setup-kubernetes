@@ -117,6 +117,9 @@ packet_amazon-linux-2-all-in-one:
 packet_opensuse-docker-cilium:
   extends: .packet_pr
 
+packet_opensuse-crio-calico-sep:
+  extends: .packet_pr
+
 packet_ubuntu20-cilium-sep:
   extends: .packet_pr
 

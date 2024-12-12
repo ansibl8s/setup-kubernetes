@@ -33,7 +33,7 @@ debian12 |  :x: | :x: | :x: | :x: | :x: | :x: | :x: | :x: |
 fedora39 |  :white_check_mark: | :x: | :x: | :x: | :x: | :x: | :x: | :x: |
 fedora40 |  :x: | :x: | :x: | :x: | :x: | :x: | :x: | :x: |
 openeuler24 |  :x: | :x: | :x: | :x: | :x: | :x: | :x: | :x: |
-opensuse |  :x: | :x: | :x: | :x: | :x: | :x: | :x: | :x: |
+opensuse |  :white_check_mark: | :x: | :x: | :x: | :x: | :x: | :x: | :x: |
 rockylinux8 |  :x: | :x: | :x: | :x: | :x: | :x: | :x: | :x: |
 rockylinux9 |  :x: | :x: | :x: | :x: | :x: | :x: | :x: | :x: |
 ubuntu20 |  :white_check_mark: | :x: | :x: | :x: | :x: | :x: | :x: | :x: |
