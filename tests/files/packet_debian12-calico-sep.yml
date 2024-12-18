@@ -1,0 +1,8 @@
+---
+# Instance settings
+cloud_image: debian-12
+mode: separate
+
+kube_network_plugin: calico
+
+container_manager: containerd
