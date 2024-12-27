@@ -1,6 +1,7 @@
 ---
 dependencies:
   - role: network_plugin/cni
+    when: kube_network_plugin != 'calico'
 
   - role: network_plugin/cilium
     when: kube_network_plugin == 'cilium' or cilium_deploy_additionally | default(false) | bool

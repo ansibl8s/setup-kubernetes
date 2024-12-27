@@ -447,7 +447,7 @@ downloads:
       - etcd
 
   cni:
-    enabled: true
+    enabled: "{{ kube_network_plugin != 'calico' }}"
     file: true
     version: "{{ cni_version }}"
     dest: "{{ local_release_dir }}/cni-plugins-linux-{{ image_arch }}-{{ cni_version }}.tgz"
