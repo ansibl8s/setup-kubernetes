@@ -106,6 +106,9 @@ packet_debian12-cilium:
 packet_almalinux8-calico:
   extends: .packet_pr
 
+packet_flatcar4081-calico:
+  extends: .packet_pr
+
 packet_rockylinux8-calico:
   extends: .packet_pr
 
