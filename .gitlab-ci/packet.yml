@@ -108,6 +108,8 @@ packet_almalinux8-calico:
 
 packet_flatcar4081-calico:
   extends: .packet_pr
+  variables:
+    ANSIBLE_VERBOSITY: 10
 
 packet_rockylinux8-calico:
   extends: .packet_pr
