@@ -114,7 +114,7 @@
     remote_src: true
   notify: Restart crio
 
-- name: Cri-o | configure crio to use kube reserved cgroups
+- name: Cri-o | configure crio to run in the kube slice
   ansible.builtin.copy:
     dest: /etc/systemd/system/crio.service.d/00-slice.conf
     owner: root
@@ -122,11 +122,8 @@
     mode: '0644'
     content: |
       [Service]
-      Slice={{ kube_reserved_cgroups_for_service_slice }}
+      Slice={{ kube_slice }}
   notify: Restart crio
-  when:
-    - kube_reserved is defined and kube_reserved is true
-    - kube_reserved_cgroups_for_service_slice is defined
 
 - name: Cri-o | update the bin dir for crio.service file
   replace:

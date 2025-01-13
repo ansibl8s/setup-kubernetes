@@ -246,47 +246,35 @@ default_kubelet_config_dir: "{{ kube_config_dir }}/dynamic_kubelet_dir"
 # Download kubectl onto the host that runs Ansible in {{ bin_dir }}
 # kubectl_localhost: false
 
-# A comma separated list of levels of node allocatable enforcement to be enforced by kubelet.
-# Acceptable options are 'pods', 'system-reserved', 'kube-reserved' and ''. Default is "".
-# kubelet_enforce_node_allocatable: pods
+## Reserving compute resources
+# https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/
 
-## Set runtime and kubelet cgroups when using systemd as cgroup driver (default)
-# kubelet_runtime_cgroups: "/{{ kube_service_cgroups }}/{{ container_manager }}.service"
-# kubelet_kubelet_cgroups: "/{{ kube_service_cgroups }}/kubelet.service"
-
-## Set runtime and kubelet cgroups when using cgroupfs as cgroup driver
-# kubelet_runtime_cgroups_cgroupfs: "/system.slice/{{ container_manager }}.service"
-# kubelet_kubelet_cgroups_cgroupfs: "/system.slice/kubelet.service"
-
-# Whether to run kubelet and container-engine daemons in a dedicated cgroup.
-# kube_reserved: false
+# Optionally reserve resources for kube daemons.
 ## Uncomment to override default values
-## The following two items need to be set when kube_reserved is true
-# kube_reserved_cgroups_for_service_slice: kube.slice
-# kube_reserved_cgroups: "/{{ kube_reserved_cgroups_for_service_slice }}"
 # kube_memory_reserved: 256Mi
 # kube_cpu_reserved: 100m
 # kube_ephemeral_storage_reserved: 2Gi
 # kube_pid_reserved: "1000"
-# Reservation for control plane hosts
-# kube_master_memory_reserved: 512Mi
-# kube_master_cpu_reserved: 200m
-# kube_master_ephemeral_storage_reserved: 2Gi
-# kube_master_pid_reserved: "1000"
 
 ## Optionally reserve resources for OS system daemons.
-# system_reserved: true
 ## Uncomment to override default values
-## The following two items need to be set when system_reserved is true
-# system_reserved_cgroups_for_service_slice: system.slice
-# system_reserved_cgroups: "/{{ system_reserved_cgroups_for_service_slice }}"
 # system_memory_reserved: 512Mi
 # system_cpu_reserved: 500m
 # system_ephemeral_storage_reserved: 2Gi
-## Reservation for master hosts
-# system_master_memory_reserved: 256Mi
-# system_master_cpu_reserved: 250m
-# system_master_ephemeral_storage_reserved: 2Gi
+# system_pid_reserved: "1000"
+#
+# Make the kubelet enforce with cgroups the limits of Pods
+# enforce_allocatable_pods: true
+
+# Enforce kube_*_reserved as limits
+# WARNING: this limits the resources the kubelet and the container engine can
+# use which can cause instability on your nodes
+# enforce_allocatable_kube_reserved: false
+
+# Enforce system_*_reserved as limits
+# WARNING: this limits the resources system daemons can use which can lock you
+# out of your nodes (by OOMkilling sshd for instance)
+# enforce_allocatable_system_reserved: false
 
 ## Eviction Thresholds to avoid system OOMs
 # https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/#eviction-thresholds

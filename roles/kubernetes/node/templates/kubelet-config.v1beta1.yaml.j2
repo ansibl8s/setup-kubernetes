@@ -15,12 +15,13 @@ authorization:
 {% else %}
   mode: AlwaysAllow
 {% endif %}
-{% if kubelet_enforce_node_allocatable is defined and kubelet_enforce_node_allocatable != "\"\"" %}
-{% set kubelet_enforce_node_allocatable_list = kubelet_enforce_node_allocatable.split(",") %}
 enforceNodeAllocatable:
-{% for item in kubelet_enforce_node_allocatable_list %}
+{% if enforce_node_allocatable %}
+{% for item in enforce_node_allocatable %}
 - {{ item }}
 {% endfor %}
+{% else %}
+- none # don't enforce anything
 {% endif %}
 staticPodPath: {{ kube_manifest_dir }}
 cgroupDriver: {{ kubelet_cgroup_driver | default('systemd') }}
@@ -33,7 +34,7 @@ address: {{ kubelet_bind_address }}
 readOnlyPort: {{ kube_read_only_port }}
 healthzPort: {{ kubelet_healthz_port }}
 healthzBindAddress: {{ kubelet_healthz_bind_address }}
-kubeletCgroups: {{ kubelet_kubelet_cgroups }}
+kubeletCgroups: {{ kube_slice_cgroup ~ 'kubelet.service' }}
 clusterDomain: {{ dns_domain }}
 {% if kubelet_protect_kernel_defaults | bool %}
 protectKernelDefaults: true
@@ -62,9 +63,7 @@ clusterDNS:
 {% endfor %}
 {# Node reserved CPU/memory #}
 {% for scope in "kube", "system" %}
-{% if lookup('ansible.builtin.vars', scope + "_reserved") | bool %}
-{{ scope }}ReservedCgroup: {{ lookup('ansible.builtin.vars', scope + '_reserved_cgroups') }}
-{% endif %}
+{{ scope }}ReservedCgroup: {{ lookup('ansible.builtin.vars', scope + '_slice_cgroup') }}
 {{ scope }}Reserved:
 {% for resource in "cpu", "memory", "ephemeral-storage", "pid" %}
   {{ resource }}: "{{ lookup('ansible.builtin.vars', scope + '_' ~ (resource | replace('-', '_')) + '_reserved') }}"

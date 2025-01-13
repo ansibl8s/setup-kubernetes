@@ -36,10 +36,8 @@ LimitMEMLOCK={{ containerd_limit_mem_lock }}
 # Only systemd 226 and above support this version.
 TasksMax=infinity
 OOMScoreAdjust=-999
-# Set the cgroup slice of the service so that kube reserved takes effect
-{% if kube_reserved is defined and kube_reserved|bool %}
-Slice={{ kube_reserved_cgroups_for_service_slice }}
-{% endif %}
+# Set the cgroup slice of the service to optionally enforce resource limitations
+Slice={{ kube_slice }}
 
 [Install]
 WantedBy=multi-user.target

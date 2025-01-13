@@ -39,12 +39,6 @@
     kubelet_cgroup_driver: "{{ kubelet_cgroup_driver_detected }}"
   when: kubelet_cgroup_driver is undefined
 
-- name: Set kubelet_cgroups options when cgroupfs is used
-  set_fact:
-    kubelet_runtime_cgroups: "{{ kubelet_runtime_cgroups_cgroupfs }}"
-    kubelet_kubelet_cgroups: "{{ kubelet_kubelet_cgroups_cgroupfs }}"
-  when: kubelet_cgroup_driver == 'cgroupfs'
-
 - name: Set kubelet_config_extra_args options when cgroupfs is used
   set_fact:
     kubelet_config_extra_args: "{{ kubelet_config_extra_args | combine(kubelet_config_extra_args_cgroupfs) }}"

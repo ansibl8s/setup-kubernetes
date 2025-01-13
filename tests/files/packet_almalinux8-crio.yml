@@ -6,3 +6,9 @@ mode: default
 # Kubespray settings
 container_manager: crio
 auto_renew_certificates: true
+
+# Test cgroups
+
+enforce_allocatable_kube_reserved: true
+enforce_allocatable_system_reserved: true
+kube_slice: nested-runtime.slice

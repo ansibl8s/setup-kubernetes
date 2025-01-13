@@ -114,11 +114,7 @@ conmon = "{{ crio_conmon }}"
 {% if crio_cgroup_manager == "cgroupfs" %}
 conmon_cgroup = "pod"
 {% else %}
-{% if kube_reserved is defined and kube_reserved|bool %}
-conmon_cgroup = "{{ kube_reserved_cgroups_for_service_slice }}"
-{% else %}
-conmon_cgroup = "system.slice"
-{% endif %}
+conmon_cgroup = "{{ kube_slice }}"
 {% endif %}
 
 # Environment variable list for the conmon process, used for passing necessary

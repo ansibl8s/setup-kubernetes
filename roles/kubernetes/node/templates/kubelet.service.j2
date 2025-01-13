@@ -14,25 +14,8 @@ Wants={{ kubelet_dependency }}
 {% endfor %}
 
 [Service]
+Slice={{ kube_slice }}
 EnvironmentFile=-{{ kube_config_dir }}/kubelet.env
-{% if system_reserved|bool %}
-ExecStartPre=/bin/mkdir -p /sys/fs/cgroup/cpu/{{ system_reserved_cgroups_for_service_slice }}
-ExecStartPre=/bin/mkdir -p /sys/fs/cgroup/cpuacct/{{ system_reserved_cgroups_for_service_slice }}
-ExecStartPre=/bin/mkdir -p /sys/fs/cgroup/cpuset/{{ system_reserved_cgroups_for_service_slice }}
-ExecStartPre=/bin/mkdir -p /sys/fs/cgroup/hugetlb/{{ system_reserved_cgroups_for_service_slice }}
-ExecStartPre=/bin/mkdir -p /sys/fs/cgroup/memory/{{ system_reserved_cgroups_for_service_slice }}
-ExecStartPre=/bin/mkdir -p /sys/fs/cgroup/pids/{{ system_reserved_cgroups_for_service_slice }}
-ExecStartPre=/bin/mkdir -p /sys/fs/cgroup/systemd/{{ system_reserved_cgroups_for_service_slice }}
-{% endif %}
-{% if kube_reserved|bool %}
-ExecStartPre=/bin/mkdir -p /sys/fs/cgroup/cpu/{{ kube_reserved_cgroups_for_service_slice }}
-ExecStartPre=/bin/mkdir -p /sys/fs/cgroup/cpuacct/{{ kube_reserved_cgroups_for_service_slice }}
-ExecStartPre=/bin/mkdir -p /sys/fs/cgroup/cpuset/{{ kube_reserved_cgroups_for_service_slice }}
-ExecStartPre=/bin/mkdir -p /sys/fs/cgroup/hugetlb/{{ kube_reserved_cgroups_for_service_slice }}
-ExecStartPre=/bin/mkdir -p /sys/fs/cgroup/memory/{{ kube_reserved_cgroups_for_service_slice }}
-ExecStartPre=/bin/mkdir -p /sys/fs/cgroup/pids/{{ kube_reserved_cgroups_for_service_slice }}
-ExecStartPre=/bin/mkdir -p /sys/fs/cgroup/systemd/{{ kube_reserved_cgroups_for_service_slice }}
-{% endif %}
 ExecStart={{ bin_dir }}/kubelet \
 		$KUBE_LOGTOSTDERR \
 		$KUBE_LOG_LEVEL \

@@ -23,6 +23,11 @@ kube_version: v1.31.4
 ## The minimum version working
 kube_version_min_required: v1.29.0
 
+# TODO: put this default to more specific place -> needed by roles container-engine+kubernetes/node
+# Set the systemd slice for kubernetes-related daemons: kubelet and container engine
+# You probably don't want to change this
+kube_slice: runtime.slice
+
 ## Kube Proxy mode One of ['iptables', 'ipvs']
 kube_proxy_mode: ipvs
 
@@ -32,9 +37,6 @@ kubeadm_config_api_version: "{{ 'v1beta4' if kube_version is version('v1.31.0', 
 
 ## The timeout for init first control-plane
 kubeadm_init_timeout: 300s
-
-# TODO: remove this
-kube_reserved_cgroups_for_service_slice: kube.slice
 
 ## List of kubeadm init phases that should be skipped during control plane setup
 ## By default 'addon/coredns' is skipped

@@ -8,3 +8,9 @@ container_manager: crio
 
 download_localhost: false
 download_run_once: true
+
+# Cgroups
+enforce_allocatable_kube_reserved: true
+enforce_allocatable_system_reserved: true
+kube_slice: nested-runtime.slice
+kubelet_cgroup_driver: cgroupfs

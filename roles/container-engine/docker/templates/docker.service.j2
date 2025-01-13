@@ -32,10 +32,8 @@ TimeoutStartSec=1min
 Restart=on-failure
 StartLimitBurst=3
 StartLimitInterval=60s
-# Set the cgroup slice of the service so that kube reserved takes effect
-{% if kube_reserved is defined and kube_reserved|bool %}
-Slice={{ kube_reserved_cgroups_for_service_slice }}
-{% endif %}
+# Set the cgroup slice of the service to optionally enforce resource limitations
+Slice={{ kube_slice }}
 
 [Install]
 WantedBy=multi-user.target
