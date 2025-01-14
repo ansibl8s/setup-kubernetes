@@ -409,7 +409,7 @@ downloads:
     container: true
     repo: "{{ netcheck_server_image_repo }}"
     tag: "{{ netcheck_server_image_tag }}"
-    sha256: "{{ netcheck_server_digest_checksum | default(None) }}"
+    checksum: "{{ netcheck_server_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -418,7 +418,7 @@ downloads:
     container: true
     repo: "{{ netcheck_agent_image_repo }}"
     tag: "{{ netcheck_agent_image_tag }}"
-    sha256: "{{ netcheck_agent_digest_checksum | default(None) }}"
+    checksum: "{{ netcheck_agent_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -429,7 +429,7 @@ downloads:
     dest: "{{ local_release_dir }}/etcd-{{ etcd_version }}-linux-{{ image_arch }}.tar.gz"
     repo: "{{ etcd_image_repo }}"
     tag: "{{ etcd_image_tag }}"
-    sha256: >-
+    checksum: >-
       {{ etcd_binary_checksum if (etcd_deployment_type == 'host')
       else etcd_digest_checksum | d(None) }}
     url: "{{ etcd_download_url }}"
@@ -443,7 +443,7 @@ downloads:
     enabled: true
     file: true
     dest: "{{ local_release_dir }}/cni-plugins-linux-{{ image_arch }}-{{ cni_version }}.tgz"
-    sha256: "{{ cni_binary_checksum }}"
+    checksum: "{{ cni_binary_checksum }}"
     url: "{{ cni_download_url }}"
     unarchive: false
     owner: "root"
@@ -455,7 +455,7 @@ downloads:
     enabled: true
     file: true
     dest: "{{ local_release_dir }}/kubeadm-{{ kube_version }}-{{ image_arch }}"
-    sha256: "{{ kubeadm_binary_checksum }}"
+    checksum: "{{ kubeadm_binary_checksum }}"
     url: "{{ kubeadm_download_url }}"
     unarchive: false
     owner: "root"
@@ -467,7 +467,7 @@ downloads:
     enabled: true
     file: true
     dest: "{{ local_release_dir }}/kubelet-{{ kube_version }}-{{ image_arch }}"
-    sha256: "{{ kubelet_binary_checksum }}"
+    checksum: "{{ kubelet_binary_checksum }}"
     url: "{{ kubelet_download_url }}"
     unarchive: false
     owner: "root"
@@ -479,7 +479,7 @@ downloads:
     enabled: true
     file: true
     dest: "{{ local_release_dir }}/kubectl-{{ kube_version }}-{{ image_arch }}"
-    sha256: "{{ kubectl_binary_checksum }}"
+    checksum: "{{ kubectl_binary_checksum }}"
     url: "{{ kubectl_download_url }}"
     unarchive: false
     owner: "root"
@@ -491,7 +491,7 @@ downloads:
     file: true
     enabled: true
     dest: "{{ local_release_dir }}/crictl-{{ crictl_version }}-linux-{{ image_arch }}.tar.gz"
-    sha256: "{{ crictl_binary_checksum }}"
+    checksum: "{{ crictl_binary_checksum }}"
     url: "{{ crictl_download_url }}"
     unarchive: true
     owner: "root"
@@ -503,7 +503,7 @@ downloads:
     file: true
     enabled: "{{ container_manager == 'crio' }}"
     dest: "{{ local_release_dir }}/cri-o.{{ image_arch }}.{{ crio_version }}.tar.gz"
-    sha256: "{{ crio_archive_checksum }}"
+    checksum: "{{ crio_archive_checksum }}"
     url: "{{ crio_download_url }}"
     unarchive: true
     owner: "root"
@@ -515,7 +515,7 @@ downloads:
     file: true
     enabled: "{{ container_manager == 'docker' }}"
     dest: "{{ local_release_dir }}/cri-dockerd-{{ cri_dockerd_version }}.{{ image_arch }}.tar.gz"
-    sha256: "{{ cri_dockerd_archive_checksum }}"
+    checksum: "{{ cri_dockerd_archive_checksum }}"
     url: "{{ cri_dockerd_download_url }}"
     unarchive: true
     unarchive_extra_opts:
@@ -529,7 +529,7 @@ downloads:
     file: true
     enabled: "{{ crun_enabled }}"
     dest: "{{ local_release_dir }}/crun-{{ crun_version }}-{{ image_arch }}"
-    sha256: "{{ crun_binary_checksum }}"
+    checksum: "{{ crun_binary_checksum }}"
     url: "{{ crun_download_url }}"
     unarchive: false
     owner: "root"
@@ -541,7 +541,7 @@ downloads:
     file: true
     enabled: "{{ youki_enabled }}"
     dest: "{{ local_release_dir }}/youki-{{ youki_version }}-{{ ansible_architecture }}.tar.gz"
-    sha256: "{{ youki_archive_checksum }}"
+    checksum: "{{ youki_archive_checksum }}"
     url: "{{ youki_download_url }}"
     unarchive: true
     owner: "root"
@@ -553,7 +553,7 @@ downloads:
     file: true
     enabled: "{{ container_manager == 'containerd' }}"
     dest: "{{ local_release_dir }}/runc-{{ runc_version }}.{{ image_arch }}"
-    sha256: "{{ runc_binary_checksum }}"
+    checksum: "{{ runc_binary_checksum }}"
     url: "{{ runc_download_url }}"
     unarchive: false
     owner: "root"
@@ -565,7 +565,7 @@ downloads:
     enabled: "{{ kata_containers_enabled }}"
     file: true
     dest: "{{ local_release_dir }}/kata-static-{{ kata_containers_version }}-{{ image_arch }}.tar.xz"
-    sha256: "{{ kata_containers_binary_checksum }}"
+    checksum: "{{ kata_containers_binary_checksum }}"
     url: "{{ kata_containers_download_url }}"
     unarchive: false
     owner: "root"
@@ -577,7 +577,7 @@ downloads:
     enabled: "{{ container_manager == 'containerd' }}"
     file: true
     dest: "{{ local_release_dir }}/containerd-{{ containerd_version }}-linux-{{ image_arch }}.tar.gz"
-    sha256: "{{ containerd_archive_checksum }}"
+    checksum: "{{ containerd_archive_checksum }}"
     url: "{{ containerd_download_url }}"
     unarchive: false
     owner: "root"
@@ -589,7 +589,7 @@ downloads:
     enabled: "{{ gvisor_enabled }}"
     file: true
     dest: "{{ local_release_dir }}/gvisor-runsc-{{ gvisor_version }}-{{ ansible_architecture }}"
-    sha256: "{{ gvisor_runsc_binary_checksum }}"
+    checksum: "{{ gvisor_runsc_binary_checksum }}"
     url: "{{ gvisor_runsc_download_url }}"
     unarchive: false
     owner: "root"
@@ -601,7 +601,7 @@ downloads:
     enabled: "{{ gvisor_enabled }}"
     file: true
     dest: "{{ local_release_dir }}/gvisor-containerd-shim-runsc-v1-{{ gvisor_version }}-{{ ansible_architecture }}"
-    sha256: "{{ gvisor_containerd_shim_binary_checksum }}"
+    checksum: "{{ gvisor_containerd_shim_binary_checksum }}"
     url: "{{ gvisor_containerd_shim_runsc_download_url }}"
     unarchive: false
     owner: "root"
@@ -613,7 +613,7 @@ downloads:
     file: true
     enabled: "{{ container_manager == 'containerd' }}"
     dest: "{{ local_release_dir }}/nerdctl-{{ nerdctl_version }}-linux-{{ image_arch }}.tar.gz"
-    sha256: "{{ nerdctl_archive_checksum }}"
+    checksum: "{{ nerdctl_archive_checksum }}"
     url: "{{ nerdctl_download_url }}"
     unarchive: true
     owner: "root"
@@ -625,7 +625,7 @@ downloads:
     file: true
     enabled: "{{ container_manager == 'crio' }}"
     dest: "{{ local_release_dir }}/skopeo-{{ skopeo_version }}-{{ image_arch }}"
-    sha256: "{{ skopeo_binary_checksum }}"
+    checksum: "{{ skopeo_binary_checksum }}"
     url: "{{ skopeo_download_url }}"
     unarchive: false
     owner: "root"
@@ -638,7 +638,7 @@ downloads:
     container: true
     repo: "{{ cilium_image_repo }}"
     tag: "{{ cilium_image_tag }}"
-    sha256: "{{ cilium_digest_checksum | default(None) }}"
+    checksum: "{{ cilium_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -647,7 +647,7 @@ downloads:
     container: true
     repo: "{{ cilium_operator_image_repo }}"
     tag: "{{ cilium_operator_image_tag }}"
-    sha256: "{{ cilium_operator_digest_checksum | default(None) }}"
+    checksum: "{{ cilium_operator_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -656,7 +656,7 @@ downloads:
     container: true
     repo: "{{ cilium_hubble_relay_image_repo }}"
     tag: "{{ cilium_hubble_relay_image_tag }}"
-    sha256: "{{ cilium_hubble_relay_digest_checksum | default(None) }}"
+    checksum: "{{ cilium_hubble_relay_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -665,7 +665,7 @@ downloads:
     container: true
     repo: "{{ cilium_hubble_certgen_image_repo }}"
     tag: "{{ cilium_hubble_certgen_image_tag }}"
-    sha256: "{{ cilium_hubble_certgen_digest_checksum | default(None) }}"
+    checksum: "{{ cilium_hubble_certgen_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -674,7 +674,7 @@ downloads:
     container: true
     repo: "{{ cilium_hubble_ui_image_repo }}"
     tag: "{{ cilium_hubble_ui_image_tag }}"
-    sha256: "{{ cilium_hubble_ui_digest_checksum | default(None) }}"
+    checksum: "{{ cilium_hubble_ui_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -683,7 +683,7 @@ downloads:
     container: true
     repo: "{{ cilium_hubble_ui_backend_image_repo }}"
     tag: "{{ cilium_hubble_ui_backend_image_tag }}"
-    sha256: "{{ cilium_hubble_ui_backend_digest_checksum | default(None) }}"
+    checksum: "{{ cilium_hubble_ui_backend_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -692,7 +692,7 @@ downloads:
     container: true
     repo: "{{ cilium_hubble_envoy_image_repo }}"
     tag: "{{ cilium_hubble_envoy_image_tag }}"
-    sha256: "{{ cilium_hubble_envoy_digest_checksum | default(None) }}"
+    checksum: "{{ cilium_hubble_envoy_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -700,7 +700,7 @@ downloads:
     enabled: "{{ kube_network_plugin == 'cilium' or cilium_deploy_additionally | default(false) | bool }}"
     file: true
     dest: "{{ local_release_dir }}/cilium-{{ cilium_cli_version }}-{{ image_arch }}.tar.gz"
-    sha256: "{{ ciliumcli_binary_checksum }}"
+    checksum: "{{ ciliumcli_binary_checksum }}"
     url: "{{ ciliumcli_download_url }}"
     unarchive: true
     owner: "root"
@@ -713,7 +713,7 @@ downloads:
     container: true
     repo: "{{ multus_image_repo }}"
     tag: "{{ multus_image_tag }}"
-    sha256: "{{ multus_digest_checksum | default(None) }}"
+    checksum: "{{ multus_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -722,7 +722,7 @@ downloads:
     container: true
     repo: "{{ flannel_image_repo }}"
     tag: "{{ flannel_image_tag }}"
-    sha256: "{{ flannel_digest_checksum | default(None) }}"
+    checksum: "{{ flannel_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -731,7 +731,7 @@ downloads:
     container: true
     repo: "{{ flannel_init_image_repo }}"
     tag: "{{ flannel_init_image_tag }}"
-    sha256: "{{ flannel_init_digest_checksum | default(None) }}"
+    checksum: "{{ flannel_init_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -739,7 +739,7 @@ downloads:
     enabled: "{{ kube_network_plugin == 'calico' }}"
     file: true
     dest: "{{ local_release_dir }}/calicoctl-{{ calico_ctl_version }}-{{ image_arch }}"
-    sha256: "{{ calicoctl_binary_checksum }}"
+    checksum: "{{ calicoctl_binary_checksum }}"
     url: "{{ calicoctl_download_url }}"
     unarchive: false
     owner: "root"
@@ -752,7 +752,7 @@ downloads:
     container: true
     repo: "{{ calico_node_image_repo }}"
     tag: "{{ calico_node_image_tag }}"
-    sha256: "{{ calico_node_digest_checksum | default(None) }}"
+    checksum: "{{ calico_node_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -761,7 +761,7 @@ downloads:
     container: true
     repo: "{{ calico_cni_image_repo }}"
     tag: "{{ calico_cni_image_tag }}"
-    sha256: "{{ calico_cni_digest_checksum | default(None) }}"
+    checksum: "{{ calico_cni_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -770,7 +770,7 @@ downloads:
     container: true
     repo: "{{ calico_policy_image_repo }}"
     tag: "{{ calico_policy_image_tag }}"
-    sha256: "{{ calico_policy_digest_checksum | default(None) }}"
+    checksum: "{{ calico_policy_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -779,7 +779,7 @@ downloads:
     container: true
     repo: "{{ calico_typha_image_repo }}"
     tag: "{{ calico_typha_image_tag }}"
-    sha256: "{{ calico_typha_digest_checksum | default(None) }}"
+    checksum: "{{ calico_typha_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -788,7 +788,7 @@ downloads:
     container: true
     repo: "{{ calico_apiserver_image_repo }}"
     tag: "{{ calico_apiserver_image_tag }}"
-    sha256: "{{ calico_apiserver_digest_checksum | default(None) }}"
+    checksum: "{{ calico_apiserver_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -796,7 +796,7 @@ downloads:
     file: true
     enabled: "{{ kube_network_plugin == 'calico' and calico_datastore == 'kdd' }}"
     dest: "{{ local_release_dir }}/calico-{{ calico_version }}-kdd-crds/{{ calico_version }}.tar.gz"
-    sha256: "{{ calico_crds_archive_checksum }}"
+    checksum: "{{ calico_crds_archive_checksum }}"
     url: "{{ calico_crds_download_url }}"
     unarchive: true
     unarchive_extra_opts:
@@ -813,7 +813,7 @@ downloads:
     container: true
     repo: "{{ weave_kube_image_repo }}"
     tag: "{{ weave_kube_image_tag }}"
-    sha256: "{{ weave_kube_digest_checksum | default(None) }}"
+    checksum: "{{ weave_kube_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -822,7 +822,7 @@ downloads:
     container: true
     repo: "{{ weave_npc_image_repo }}"
     tag: "{{ weave_npc_image_tag }}"
-    sha256: "{{ weave_npc_digest_checksum | default(None) }}"
+    checksum: "{{ weave_npc_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -831,7 +831,7 @@ downloads:
     container: true
     repo: "{{ kube_ovn_container_image_repo }}"
     tag: "{{ kube_ovn_container_image_tag }}"
-    sha256: "{{ kube_ovn_digest_checksum | default(None) }}"
+    checksum: "{{ kube_ovn_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -840,7 +840,7 @@ downloads:
     container: true
     repo: "{{ kube_router_image_repo }}"
     tag: "{{ kube_router_image_tag }}"
-    sha256: "{{ kube_router_digest_checksum | default(None) }}"
+    checksum: "{{ kube_router_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -849,7 +849,7 @@ downloads:
     container: true
     repo: "{{ pod_infra_image_repo }}"
     tag: "{{ pod_infra_image_tag }}"
-    sha256: "{{ pod_infra_digest_checksum | default(None) }}"
+    checksum: "{{ pod_infra_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -858,7 +858,7 @@ downloads:
     container: true
     repo: "{{ kube_vip_image_repo }}"
     tag: "{{ kube_vip_image_tag }}"
-    sha256: "{{ kube_vip_digest_checksum | default(None) }}"
+    checksum: "{{ kube_vip_digest_checksum | default(None) }}"
     groups:
       - kube_control_plane
 
@@ -867,7 +867,7 @@ downloads:
     container: true
     repo: "{{ nginx_image_repo }}"
     tag: "{{ nginx_image_tag }}"
-    sha256: "{{ nginx_digest_checksum | default(None) }}"
+    checksum: "{{ nginx_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -876,7 +876,7 @@ downloads:
     container: true
     repo: "{{ haproxy_image_repo }}"
     tag: "{{ haproxy_image_tag }}"
-    sha256: "{{ haproxy_digest_checksum | default(None) }}"
+    checksum: "{{ haproxy_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -885,7 +885,7 @@ downloads:
     container: true
     repo: "{{ coredns_image_repo }}"
     tag: "{{ coredns_image_tag }}"
-    sha256: "{{ coredns_digest_checksum | default(None) }}"
+    checksum: "{{ coredns_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -894,7 +894,7 @@ downloads:
     container: true
     repo: "{{ nodelocaldns_image_repo }}"
     tag: "{{ nodelocaldns_image_tag }}"
-    sha256: "{{ nodelocaldns_digest_checksum | default(None) }}"
+    checksum: "{{ nodelocaldns_digest_checksum | default(None) }}"
     groups:
       - k8s_cluster
 
@@ -903,7 +903,7 @@ downloads:
     container: true
     repo: "{{ dnsautoscaler_image_repo }}"
     tag: "{{ dnsautoscaler_image_tag }}"
-    sha256: "{{ dnsautoscaler_digest_checksum | default(None) }}"
+    checksum: "{{ dnsautoscaler_digest_checksum | default(None) }}"
     groups:
       - kube_control_plane
 
@@ -911,7 +911,7 @@ downloads:
     enabled: "{{ helm_enabled }}"
     file: true
     dest: "{{ local_release_dir }}/helm-{{ helm_version }}/helm-{{ helm_version }}-linux-{{ image_arch }}.tar.gz"
-    sha256: "{{ helm_archive_checksum }}"
+    checksum: "{{ helm_archive_checksum }}"
     url: "{{ helm_download_url }}"
     unarchive: true
     owner: "root"
@@ -924,7 +924,7 @@ downloads:
     container: true
     repo: "{{ registry_image_repo }}"
     tag: "{{ registry_image_tag }}"
-    sha256: "{{ registry_digest_checksum | default(None) }}"
+    checksum: "{{ registry_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -933,7 +933,7 @@ downloads:
     container: true
     repo: "{{ metrics_server_image_repo }}"
     tag: "{{ metrics_server_image_tag }}"
-    sha256: "{{ metrics_server_digest_checksum | default(None) }}"
+    checksum: "{{ metrics_server_digest_checksum | default(None) }}"
     groups:
       - kube_control_plane
 
@@ -942,7 +942,7 @@ downloads:
     container: true
     repo: "{{ local_volume_provisioner_image_repo }}"
     tag: "{{ local_volume_provisioner_image_tag }}"
-    sha256: "{{ local_volume_provisioner_digest_checksum | default(None) }}"
+    checksum: "{{ local_volume_provisioner_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -951,7 +951,7 @@ downloads:
     container: true
     repo: "{{ cephfs_provisioner_image_repo }}"
     tag: "{{ cephfs_provisioner_image_tag }}"
-    sha256: "{{ cephfs_provisioner_digest_checksum | default(None) }}"
+    checksum: "{{ cephfs_provisioner_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -960,7 +960,7 @@ downloads:
     container: true
     repo: "{{ rbd_provisioner_image_repo }}"
     tag: "{{ rbd_provisioner_image_tag }}"
-    sha256: "{{ rbd_provisioner_digest_checksum | default(None) }}"
+    checksum: "{{ rbd_provisioner_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -969,7 +969,7 @@ downloads:
     container: true
     repo: "{{ local_path_provisioner_image_repo }}"
     tag: "{{ local_path_provisioner_image_tag }}"
-    sha256: "{{ local_path_provisioner_digest_checksum | default(None) }}"
+    checksum: "{{ local_path_provisioner_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -978,7 +978,7 @@ downloads:
     container: true
     repo: "{{ ingress_nginx_controller_image_repo }}"
     tag: "{{ ingress_nginx_controller_image_tag }}"
-    sha256: "{{ ingress_nginx_controller_digest_checksum | default(None) }}"
+    checksum: "{{ ingress_nginx_controller_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -987,7 +987,7 @@ downloads:
     container: true
     repo: "{{ alb_ingress_image_repo }}"
     tag: "{{ alb_ingress_image_tag }}"
-    sha256: "{{ ingress_alb_controller_digest_checksum | default(None) }}"
+    checksum: "{{ ingress_alb_controller_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -996,7 +996,7 @@ downloads:
     container: true
     repo: "{{ cert_manager_controller_image_repo }}"
     tag: "{{ cert_manager_controller_image_tag }}"
-    sha256: "{{ cert_manager_controller_digest_checksum | default(None) }}"
+    checksum: "{{ cert_manager_controller_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -1005,7 +1005,7 @@ downloads:
     container: true
     repo: "{{ cert_manager_cainjector_image_repo }}"
     tag: "{{ cert_manager_cainjector_image_tag }}"
-    sha256: "{{ cert_manager_cainjector_digest_checksum | default(None) }}"
+    checksum: "{{ cert_manager_cainjector_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -1014,7 +1014,7 @@ downloads:
     container: true
     repo: "{{ cert_manager_webhook_image_repo }}"
     tag: "{{ cert_manager_webhook_image_tag }}"
-    sha256: "{{ cert_manager_webhook_digest_checksum | default(None) }}"
+    checksum: "{{ cert_manager_webhook_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -1023,7 +1023,7 @@ downloads:
     container: true
     repo: "{{ csi_attacher_image_repo }}"
     tag: "{{ csi_attacher_image_tag }}"
-    sha256: "{{ csi_attacher_digest_checksum | default(None) }}"
+    checksum: "{{ csi_attacher_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -1032,7 +1032,7 @@ downloads:
     container: true
     repo: "{{ csi_provisioner_image_repo }}"
     tag: "{{ csi_provisioner_image_tag }}"
-    sha256: "{{ csi_provisioner_digest_checksum | default(None) }}"
+    checksum: "{{ csi_provisioner_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -1041,7 +1041,7 @@ downloads:
     container: true
     repo: "{{ csi_snapshotter_image_repo }}"
     tag: "{{ csi_snapshotter_image_tag }}"
-    sha256: "{{ csi_snapshotter_digest_checksum | default(None) }}"
+    checksum: "{{ csi_snapshotter_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -1050,7 +1050,7 @@ downloads:
     container: true
     repo: "{{ snapshot_controller_image_repo }}"
     tag: "{{ snapshot_controller_image_tag }}"
-    sha256: "{{ snapshot_controller_digest_checksum | default(None) }}"
+    checksum: "{{ snapshot_controller_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -1059,7 +1059,7 @@ downloads:
     container: true
     repo: "{{ csi_resizer_image_repo }}"
     tag: "{{ csi_resizer_image_tag }}"
-    sha256: "{{ csi_resizer_digest_checksum | default(None) }}"
+    checksum: "{{ csi_resizer_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -1068,7 +1068,7 @@ downloads:
     container: true
     repo: "{{ csi_node_driver_registrar_image_repo }}"
     tag: "{{ csi_node_driver_registrar_image_tag }}"
-    sha256: "{{ csi_node_driver_registrar_digest_checksum | default(None) }}"
+    checksum: "{{ csi_node_driver_registrar_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -1077,7 +1077,7 @@ downloads:
     container: true
     repo: "{{ cinder_csi_plugin_image_repo }}"
     tag: "{{ cinder_csi_plugin_image_tag }}"
-    sha256: "{{ cinder_csi_plugin_digest_checksum | default(None) }}"
+    checksum: "{{ cinder_csi_plugin_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -1086,7 +1086,7 @@ downloads:
     container: true
     repo: "{{ aws_ebs_csi_plugin_image_repo }}"
     tag: "{{ aws_ebs_csi_plugin_image_tag }}"
-    sha256: "{{ aws_ebs_csi_plugin_digest_checksum | default(None) }}"
+    checksum: "{{ aws_ebs_csi_plugin_digest_checksum | default(None) }}"
     groups:
       - kube_node
 
@@ -1095,7 +1095,7 @@ downloads:
     container: true
     repo: "{{ dashboard_image_repo }}"
     tag: "{{ dashboard_image_tag }}"
-    sha256: "{{ dashboard_digest_checksum | default(None) }}"
+    checksum: "{{ dashboard_digest_checksum | default(None) }}"
     groups:
       - kube_control_plane
 
@@ -1104,7 +1104,7 @@ downloads:
     container: true
     repo: "{{ dashboard_metrics_scraper_repo }}"
     tag: "{{ dashboard_metrics_scraper_tag }}"
-    sha256: "{{ dashboard_digest_checksum | default(None) }}"
+    checksum: "{{ dashboard_digest_checksum | default(None) }}"
     groups:
       - kube_control_plane
 
@@ -1113,7 +1113,7 @@ downloads:
     container: true
     repo: "{{ metallb_speaker_image_repo }}"
     tag: "{{ metallb_version }}"
-    sha256: "{{ metallb_speaker_digest_checksum | default(None) }}"
+    checksum: "{{ metallb_speaker_digest_checksum | default(None) }}"
     groups:
       - kube_control_plane
 
@@ -1122,7 +1122,7 @@ downloads:
     container: true
     repo: "{{ metallb_controller_image_repo }}"
     tag: "{{ metallb_version }}"
-    sha256: "{{ metallb_controller_digest_checksum | default(None) }}"
+    checksum: "{{ metallb_controller_digest_checksum | default(None) }}"
     groups:
       - kube_control_plane
 
@@ -1131,7 +1131,7 @@ downloads:
     file: true
     version: "{{ yq_version }}"
     dest: "{{ local_release_dir }}/yq-{{ yq_version }}-{{ image_arch }}"
-    sha256: "{{ yq_binary_checksum | default(None) }}"
+    checksum: "{{ yq_binary_checksum }}"
     url: "{{ yq_download_url }}"
     unarchive: false
     owner: "root"
