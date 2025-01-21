@@ -28,13 +28,13 @@ If you wanted to upgrade just kube_version from v1.18.10 to v1.19.7, you could
 deploy the following way:
 
 ```ShellSession
-ansible-playbook cluster.yml -i inventory/sample/hosts.ini -e kube_version=v1.18.10 -e upgrade_cluster_setup=true
+ansible-playbook cluster.yml -i <inventory_path>/hosts.ini -e kube_version=v1.18.10 -e upgrade_cluster_setup=true
 ```
 
 And then repeat with v1.19.7 as kube_version:
 
 ```ShellSession
-ansible-playbook cluster.yml -i inventory/sample/hosts.ini -e kube_version=v1.19.7 -e upgrade_cluster_setup=true
+ansible-playbook cluster.yml -i <inventory_path>/hosts.ini -e kube_version=v1.19.7 -e upgrade_cluster_setup=true
 ```
 
 The var ```-e upgrade_cluster_setup=true``` is needed to be set in order to migrate the deploys of e.g kube-apiserver inside the cluster immediately which is usually only done in the graceful upgrade. (Refer to [#4139](https://github.com/kubernetes-sigs/kubespray/issues/4139) and [#4736](https://github.com/kubernetes-sigs/kubespray/issues/4736))
@@ -48,7 +48,7 @@ existing cluster. That means there must be at least 1 kube_control_plane already
 deployed.
 
 ```ShellSession
-ansible-playbook upgrade-cluster.yml -b -i inventory/sample/hosts.ini -e kube_version=v1.19.7
+ansible-playbook upgrade-cluster.yml -b -i <inventory_path>/hosts.ini -e kube_version=v1.19.7
 ```
 
 After a successful upgrade, the Server Version should be updated:
@@ -62,7 +62,7 @@ Server Version: version.Info{Major:"1", Minor:"19", GitVersion:"v1.19.7", GitCom
 You can control how many nodes are upgraded at the same time by modifying the ansible variable named `serial`, as explained [here](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_strategies.html#setting-the-batch-size-with-serial). If you don't set this variable, it will upgrade the cluster nodes in batches of  20% of the available nodes. Setting `serial=1` would mean upgrade one node at a time.
 
 ```ShellSession
-ansible-playbook upgrade-cluster.yml -b -i inventory/sample/hosts.ini -e kube_version=v1.20.7 -e "serial=1"
+ansible-playbook upgrade-cluster.yml -b -i <inventory_path>/hosts.ini -e kube_version=v1.20.7 -e "serial=1"
 ```
 
 ### Pausing the upgrade
@@ -84,20 +84,20 @@ If you don't want to upgrade all nodes in one run, you can use `--limit` [patter
 Before using `--limit` run playbook `facts.yml` without the limit to refresh facts cache for all nodes:
 
 ```ShellSession
-ansible-playbook facts.yml -b -i inventory/sample/hosts.ini
+ansible-playbook facts.yml -b -i <inventory_path>/hosts.ini
 ```
 
 After this upgrade control plane and etcd groups [#5147](https://github.com/kubernetes-sigs/kubespray/issues/5147):
 
 ```ShellSession
-ansible-playbook upgrade-cluster.yml -b -i inventory/sample/hosts.ini -e kube_version=v1.20.7 --limit "kube_control_plane:etcd"
+ansible-playbook upgrade-cluster.yml -b -i <inventory_path>/hosts.ini -e kube_version=v1.20.7 --limit "kube_control_plane:etcd"
 ```
 
 Now you can upgrade other nodes in any order and quantity:
 
 ```ShellSession
-ansible-playbook upgrade-cluster.yml -b -i inventory/sample/hosts.ini -e kube_version=v1.20.7 --limit "node4:node6:node7:node12"
-ansible-playbook upgrade-cluster.yml -b -i inventory/sample/hosts.ini -e kube_version=v1.20.7 --limit "node5*"
+ansible-playbook upgrade-cluster.yml -b -i <inventory_path>/hosts.ini -e kube_version=v1.20.7 --limit "node4:node6:node7:node12"
+ansible-playbook upgrade-cluster.yml -b -i <inventory_path>/hosts.ini -e kube_version=v1.20.7 --limit "node5*"
 ```
 
 ## Multiple upgrades
@@ -374,49 +374,49 @@ hosts.
 Upgrade docker:
 
 ```ShellSession
-ansible-playbook -b -i inventory/sample/hosts.ini cluster.yml --tags=docker
+ansible-playbook -b -i <inventory_path>/hosts.ini cluster.yml --tags=docker
 ```
 
 Upgrade etcd:
 
 ```ShellSession
-ansible-playbook -b -i inventory/sample/hosts.ini cluster.yml --tags=etcd
+ansible-playbook -b -i <inventory_path>/hosts.ini cluster.yml --tags=etcd
 ```
 
 Upgrade etcd without rotating etcd certs:
 
 ```ShellSession
-ansible-playbook -b -i inventory/sample/hosts.ini cluster.yml --tags=etcd --limit=etcd --skip-tags=etcd-secrets
+ansible-playbook -b -i <inventory_path>/hosts.ini cluster.yml --tags=etcd --limit=etcd --skip-tags=etcd-secrets
 ```
 
 Upgrade kubelet:
 
 ```ShellSession
-ansible-playbook -b -i inventory/sample/hosts.ini cluster.yml --tags=node --skip-tags=k8s-gen-certs
+ansible-playbook -b -i <inventory_path>/hosts.ini cluster.yml --tags=node --skip-tags=k8s-gen-certs
 ```
 
 Upgrade Kubernetes master components:
 
 ```ShellSession
-ansible-playbook -b -i inventory/sample/hosts.ini cluster.yml --tags=master
+ansible-playbook -b -i <inventory_path>/hosts.ini cluster.yml --tags=master
 ```
 
 Upgrade network plugins:
 
 ```ShellSession
-ansible-playbook -b -i inventory/sample/hosts.ini cluster.yml --tags=network
+ansible-playbook -b -i <inventory_path>/hosts.ini cluster.yml --tags=network
 ```
 
 Upgrade all add-ons:
 
 ```ShellSession
-ansible-playbook -b -i inventory/sample/hosts.ini cluster.yml --tags=apps
+ansible-playbook -b -i <inventory_path>/hosts.ini cluster.yml --tags=apps
 ```
 
 Upgrade just helm (assuming `helm_enabled` is true):
 
 ```ShellSession
-ansible-playbook -b -i inventory/sample/hosts.ini cluster.yml --tags=helm
+ansible-playbook -b -i <inventory_path>/hosts.ini cluster.yml --tags=helm
 ```
 
 ## Migrate from Docker to Containerd
@@ -432,7 +432,7 @@ As of Kubespray 2.18.0, containerd is already the default container engine. If y
 If you want to upgrade the APT or YUM packages while the nodes are cordoned, you can use:
 
 ```ShellSession
-ansible-playbook upgrade-cluster.yml -b -i inventory/sample/hosts.ini -e system_upgrade=true
+ansible-playbook upgrade-cluster.yml -b -i <inventory_path>/hosts.ini -e system_upgrade=true
 ```
 
 Nodes will be rebooted when there are package upgrades (`system_upgrade_reboot: on-upgrade`).

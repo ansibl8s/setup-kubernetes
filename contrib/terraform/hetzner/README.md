@@ -49,7 +49,6 @@ Copy the cluster configuration file.
 
 ```bash
 CLUSTER=my-hetzner-cluster
-cp -r inventory/sample inventory/$CLUSTER
 cp contrib/terraform/hetzner/default.tfvars inventory/$CLUSTER/
 cd inventory/$CLUSTER
 ```

@@ -206,36 +206,44 @@ playbook:
 pip install -r requirements.txt
 ```
 
-Copy ``inventory/sample`` as ``inventory/mycluster``:
-
-```ShellSession
-cp -rfp inventory/sample inventory/mycluster
-```
-
-Update the sample Ansible inventory file with ip given by gcloud:
+Create your Ansible inventory file with ip given by gcloud:
 
 ```ShellSession
 gcloud compute instances list --filter="tags.items=kubernetes-the-kubespray-way"
 ```
 
-Open `inventory/mycluster/inventory.ini` file and add it so
-that controller-0, controller-1 and controller-2 in the `kube_control_plane` group and
-worker-0, worker-1 and worker-2 in the `kube_node` group. Add respective `ip` to the respective local VPC IP for each node.
+Create the `inventory/mycluster/inventory.ini` file with the following content:
 
-The main configuration for the cluster is stored in
-`inventory/mycluster/group_vars/k8s_cluster/k8s_cluster.yml`. In this file we
- will update the `supplementary_addresses_in_ssl_keys` with a list of the IP
- addresses of the controller nodes. In that way we can access the
-  kubernetes API server as an administrator from outside the VPC network. You
-   can also see that the `kube_network_plugin` is by default set to 'calico'.
-   If you set this to 'cloud', it did not work on GCP at the time of testing.
+```ini
+[kube_control_plane]
+controller-0 ip=<ip of controller-0> # add respective ip for each node in the inventory
+controller-1
+controller-2
 
-Kubespray also offers to easily enable popular kubernetes add-ons. You can
-modify the
-list of add-ons in `inventory/mycluster/group_vars/k8s_cluster/addons.yml`.
-Let's enable the metrics server as this is a crucial monitoring element for
-the kubernetes cluster, just change the 'false' to 'true' for
+[kube_node]
+worker-0
+worker-1
+worker-2
+```
+
+In order to be able to access the Kubernetes API server from outside the VPC network, we'll need to add the ip from all
+three controller nodes to `supplementary_addresses_in_ssl_keys`. You can place this variable in
+`inventory/mycluster/group_vars/kube_control_plane.yml` (apply to all hosts in the `kube_control_plane` group).
+
+```yml
+supplementary_addresses_in_ssl_keys:
+- <ip-0>
+- <ip-1>
+- <ip-2>
+```
+
+Kubespray also offers to easily enable popular kubernetes add-ons.
+Let's enable the metrics server as this is a crucial monitoring element for the kubernetes cluster.
 `metrics_server_enabled`.
+
+```yml
+metrics_server_enabled: true
+```
 
 Now we will deploy the configuration:
 

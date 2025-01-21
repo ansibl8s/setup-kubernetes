@@ -6,10 +6,9 @@ Install Ansible according to [Ansible installation guide](/docs/ansible/ansible.
 
 ## Building your own inventory
 
-Ansible inventory can be stored in 3 formats: YAML, JSON, or INI-like. See the
-[example inventory](/inventory/sample/inventory.ini)
-and [Ansible documentation on building your inventory](https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html),
-and [details on the inventory structure expected by Kubespray](/docs/ansible/inventory.md).
+Ansible inventory can be stored in 3 formats: YAML, JSON, or INI-like. See the [Ansible documentation on building your
+inventory](https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html), and [details on the inventory
+structure expected by Kubespray](/docs/ansible/inventory.md).
 
 ```ShellSession
 <your-favorite-editor> inventory/mycluster/inventory.ini

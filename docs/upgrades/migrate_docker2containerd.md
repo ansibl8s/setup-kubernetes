@@ -66,7 +66,7 @@ apt-get install pigz
 ### 5) Run `cluster.yml` playbook with `--limit`
 
 ```commandline
-ansible-playbook -i inventory/sample/hosts.ini cluster.yml --limit=NODENAME
+ansible-playbook -i <inventory_path>/hosts.ini cluster.yml --limit=NODENAME
 ```
 
 This effectively reinstalls containerd and seems to place all config files in the right place. When this completes, kubelet will immediately pick up the new container engine and start spinning up DaemonSets and kube-system Pods.

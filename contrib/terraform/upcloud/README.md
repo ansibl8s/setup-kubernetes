@@ -52,7 +52,6 @@ Copy the cluster configuration file.
 
 ```bash
 CLUSTER=my-upcloud-cluster
-cp -r inventory/sample inventory/$CLUSTER
 cp contrib/terraform/upcloud/cluster-settings.tfvars inventory/$CLUSTER/
 export ANSIBLE_CONFIG=ansible.cfg
 cd inventory/$CLUSTER

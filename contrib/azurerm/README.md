@@ -63,5 +63,5 @@ It will create the file ./inventory which can then be used with kubespray, e.g.:
 
 ```shell
 cd kubespray-root-dir
-ansible-playbook -i contrib/azurerm/inventory -u devops --become -e "@inventory/sample/group_vars/all/all.yml" cluster.yml
+ansible-playbook -i contrib/azurerm/inventory -u devops --become cluster.yml
 ```

@@ -45,7 +45,6 @@ Copy the sample inventory for your cluster and copy the default terraform variab
 
 ```bash
 CLUSTER=my-vsphere-cluster
-cp -r inventory/sample inventory/$CLUSTER
 cp contrib/terraform/vsphere/default.tfvars inventory/$CLUSTER/
 cd inventory/$CLUSTER
 ```

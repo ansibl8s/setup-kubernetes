@@ -41,7 +41,6 @@ Copy the sample inventory for your cluster and copy the default terraform variab
 
 ```bash
 CLUSTER=my-exoscale-cluster
-cp -r inventory/sample inventory/$CLUSTER
 cp contrib/terraform/exoscale/default.tfvars inventory/$CLUSTER/
 cd inventory/$CLUSTER
 ```

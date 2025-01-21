@@ -10,8 +10,8 @@ Weave encryption is supported for all communication
 
 * To use Weave encryption, specify a strong password (if no password, no encryption)
 
-```ShellSession
-# In file ./inventory/sample/group_vars/k8s_cluster.yml
+```yaml
+# <your_inventory_path>/group_vars/k8s_cluster.yml
 weave_password: EnterPasswordHere
 ```
 

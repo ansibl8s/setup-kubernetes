@@ -25,7 +25,7 @@ In addition, you can find some tools for offline deployment under [contrib/offli
 ## Configure Inventory
 
 Once all artifacts are accessible from your internal network, **adjust** the following variables
-in [your inventory](/inventory/sample/group_vars/all/offline.yml) to match your environment:
+in your inventory to match your environment:
 
 ```yaml
 # Registry overrides

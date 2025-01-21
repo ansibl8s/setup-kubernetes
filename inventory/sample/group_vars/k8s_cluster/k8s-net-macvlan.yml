@@ -1,6 +1,0 @@
----
-# private interface, on a l2-network
-macvlan_interface: "eth1"
-
-# Enable nat in default gateway network interface
-enable_nat_default_gateway: true

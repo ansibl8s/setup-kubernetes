@@ -21,14 +21,14 @@ After this step you should have:
 
 ### Kubespray configuration
 
-First in `inventory/sample/group_vars/all/all.yml` you must set the `cloud_provider` to `external` and `external_cloud_provider` to `vsphere`.
+First in `<inventory_path>/group_vars/all/all.yml` you must set the `cloud_provider` to `external` and `external_cloud_provider` to `vsphere`.
 
 ```yml
 cloud_provider:  "external"
 external_cloud_provider: "vsphere"
 ```
 
-Then, `inventory/sample/group_vars/all/vsphere.yml`, you need to declare your vCenter credentials and enable the vSphere CSI following the description below.
+Then, `<inventory_path>/group_vars/all/vsphere.yml`, you need to declare your vCenter credentials and enable the vSphere CSI following the description below.
 
 | Variable                               | Required | Type    | Choices                    | Default                   | Comment                                                                                                             |
 |----------------------------------------|----------|---------|----------------------------|---------------------------|---------------------------------------------------------------------------------------------------------------------|
@@ -62,7 +62,7 @@ Once the configuration is set, you can execute the playbook again to apply the n
 
 ```ShellSession
 cd kubespray
-ansible-playbook -i inventory/sample/hosts.ini -b -v cluster.yml
+ansible-playbook -i <inventory_path>/hosts.ini -b -v cluster.yml
 ```
 
 You'll find some useful examples [here](https://github.com/kubernetes/cloud-provider-vsphere/blob/master/docs/book/tutorials/kubernetes-on-vsphere-with-kubeadm.md#sample-manifests-to-test-csi-driver-functionality) to test your configuration.
@@ -82,7 +82,7 @@ If you intend to leverage the [zone and region node labeling](https://kubernetes
 
 ### Kubespray configuration (deprecated)
 
-First you must define the cloud provider in `inventory/sample/group_vars/all.yml` and set it to `vsphere`.
+First you must define the cloud provider in `<inventory_path>/group_vars/all.yml` and set it to `vsphere`.
 
 ```yml
 cloud_provider: vsphere
@@ -128,7 +128,7 @@ Once the configuration is set, you can execute the playbook again to apply the n
 
 ```ShellSession
 cd kubespray
-ansible-playbook -i inventory/sample/hosts.ini -b -v cluster.yml
+ansible-playbook -i <inventory_path>/hosts.ini -b -v cluster.yml
 ```
 
 You'll find some useful examples [here](https://github.com/kubernetes/examples/tree/master/staging/volumes/vsphere) to test your configuration.

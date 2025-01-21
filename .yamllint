@@ -6,6 +6,7 @@ ignore: |
   .github/
   # Generated file
   tests/files/custom_cni/cilium.yaml
+  docs/ansible/variable_reference.yml
 # https://ansible.readthedocs.io/projects/lint/rules/yaml/
 rules:
   braces:

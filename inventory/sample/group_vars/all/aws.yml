@@ -1,9 +1,0 @@
-## To use AWS EBS CSI Driver to provision volumes, uncomment the first value
-## and configure the parameters below
-# aws_ebs_csi_enabled: true
-# aws_ebs_csi_enable_volume_scheduling: true
-# aws_ebs_csi_enable_volume_snapshot: false
-# aws_ebs_csi_enable_volume_resizing: false
-# aws_ebs_csi_controller_replicas: 1
-# aws_ebs_csi_plugin_image_tag: latest
-# aws_ebs_csi_extra_volume_tags: "Owner=owner,Team=team,Environment=environment'

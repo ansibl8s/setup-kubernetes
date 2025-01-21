@@ -170,20 +170,20 @@ Example command to filter and apply only DNS configuration tasks and skip
 everything else related to host OS configuration and downloading images of containers:
 
 ```ShellSession
-ansible-playbook -i inventory/sample/hosts.ini cluster.yml --tags preinstall,facts --skip-tags=download,bootstrap-os
+ansible-playbook -i <inventory_path>/hosts.ini cluster.yml --tags preinstall,facts --skip-tags=download,bootstrap-os
 ```
 
 And this play only removes the K8s cluster DNS resolver IP from hosts' /etc/resolv.conf files:
 
 ```ShellSession
-ansible-playbook -i inventory/sample/hosts.ini -e dns_mode='none' cluster.yml --tags resolvconf
+ansible-playbook -i <inventory_path>/hosts.ini -e dns_mode='none' cluster.yml --tags resolvconf
 ```
 
 And this prepares all container images locally (at the ansible runner node) without installing
 or upgrading related stuff or trying to upload container to K8s cluster nodes:
 
 ```ShellSession
-ansible-playbook -i inventory/sample/hosts.ini cluster.yml \
+ansible-playbook -i <inventory_path>/hosts.ini cluster.yml \
     -e download_run_once=true -e download_localhost=true \
     --tags download --skip-tags upload,upgrade
 ```
@@ -211,7 +211,7 @@ to access the inventory and SSH key in the container, like this:
 ```ShellSession
 git checkout v2.27.0
 docker pull quay.io/kubespray/kubespray:v2.27.0
-docker run --rm -it --mount type=bind,source="$(pwd)"/inventory/sample,dst=/inventory \
+docker run --rm -it --mount type=bind,source="$(pwd)"/<inventory_path>,dst=/inventory \
   --mount type=bind,source="${HOME}"/.ssh/id_rsa,dst=/root/.ssh/id_rsa \
   quay.io/kubespray/kubespray:v2.27.0 bash
 # Inside the container you may now run the kubespray playbooks:

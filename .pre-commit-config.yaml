@@ -13,6 +13,8 @@ repos:
       - id: forbid-new-submodules
       - id: requirements-txt-fixer
       - id: trailing-whitespace
+      - id: check-symlinks
+      - id: destroyed-symlinks
 
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.35.1
@@ -90,3 +92,11 @@ repos:
           - jinja
         additional_dependencies:
           - jinja2
+
+      - id: generate-vars-ref
+        name: Generate variable reference from defaults files
+        language: system
+        entry: bash
+        args:
+          - -c
+          - find roles/ \( -wholename '*/defaults/*.yml' -o -wholename '*/defaults/*.yaml' \) -print0 | LC_ALL=C sort -z | xargs -0 tail -n +1 | sed 's/==>/##/' > docs/ansible/variable_reference.yml

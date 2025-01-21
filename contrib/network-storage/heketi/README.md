@@ -12,16 +12,16 @@ Heketi provides a CLI that provides users with a means to administer the deploym
 
 ## Install
 
-Copy the inventory.yml.sample over to inventory/sample/k8s_heketi_inventory.yml and change it according to your setup.
+Copy the inventory.yml.sample over to `<inventory_path>/k8s_heketi_inventory.yml` and change it according to your setup.
 
 ```shell
-ansible-playbook --ask-become -i inventory/sample/k8s_heketi_inventory.yml contrib/network-storage/heketi/heketi.yml
+ansible-playbook --ask-become -i <inventory_path>/k8s_heketi_inventory.yml contrib/network-storage/heketi/heketi.yml
 ```
 
 ## Tear down
 
 ```shell
-ansible-playbook --ask-become -i inventory/sample/k8s_heketi_inventory.yml contrib/network-storage/heketi/heketi-tear-down.yml
+ansible-playbook --ask-become -i <inventory_path>/k8s_heketi_inventory.yml contrib/network-storage/heketi/heketi-tear-down.yml
 ```
 
 Add `--extra-vars "heketi_remove_lvm=true"` to the command above to remove LVM packages from the system
