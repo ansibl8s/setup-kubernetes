@@ -438,7 +438,7 @@ argocd_enabled: false
 
 ## When OpenStack is used, Cinder version can be explicitly specified if autodetection fails (Fixed in 1.9: https://github.com/kubernetes/kubernetes/issues/50461)
 # openstack_blockstorage_version: "v1/v2/auto (default)"
-openstack_blockstorage_ignore_volume_az: "{{ volume_cross_zone_attachment | default('false') }}"
+openstack_blockstorage_ignore_volume_az: "{{ volume_cross_zone_attachment }}"
 # set max volumes per node (cinder-csi), default not set
 # node_volume_attach_limit: 25
 # Cinder CSI topology, when false volumes can be cross-mounted between availability zones
@@ -446,7 +446,7 @@ openstack_blockstorage_ignore_volume_az: "{{ volume_cross_zone_attachment | defa
 # Set Cinder topology zones (can be multiple zones, default not set)
 # cinder_topology_zones:
 #   - nova
-cinder_csi_ignore_volume_az: "{{ volume_cross_zone_attachment | default('false') }}"
+cinder_csi_ignore_volume_az: "{{ volume_cross_zone_attachment }}"
 
 ## When OpenStack is used, if LBaaSv2 is available you can enable it with the following 2 variables.
 openstack_lbaas_enabled: false

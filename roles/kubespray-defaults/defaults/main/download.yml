@@ -194,6 +194,7 @@ cri_dockerd_download_url: "{{ github_url }}/Mirantis/cri-dockerd/releases/downlo
 skopeo_download_url: "{{ github_url }}/lework/skopeo-binary/releases/download/{{ skopeo_version }}/skopeo-linux-{{ image_arch }}"
 yq_download_url: "{{ github_url }}/mikefarah/yq/releases/download/{{ yq_version }}/yq_linux_{{ image_arch }}"
 
+etcd_digest_checksum: null
 etcd_binary_checksum: "{{ etcd_binary_checksums[image_arch][etcd_version] }}"
 cni_binary_checksum: "{{ cni_binary_checksums[image_arch][cni_version] }}"
 kubelet_binary_checksum: "{{ kubelet_checksums[image_arch][kube_version] }}"
@@ -400,6 +401,7 @@ dashboard_image_repo: "{{ docker_image_repo }}/kubernetesui/dashboard"
 dashboard_image_tag: "v2.7.0"
 dashboard_metrics_scraper_repo: "{{ docker_image_repo }}/kubernetesui/metrics-scraper"
 dashboard_metrics_scraper_tag: "v1.0.8"
+dashboard_digest_checksum: null
 
 metallb_speaker_image_repo: "{{ quay_image_repo }}/metallb/speaker"
 metallb_controller_image_repo: "{{ quay_image_repo }}/metallb/controller"
@@ -438,7 +440,7 @@ downloads:
     tag: "{{ etcd_image_tag }}"
     sha256: >-
       {{ etcd_binary_checksum if (etcd_deployment_type == 'host')
-      else etcd_digest_checksum | d(None) }}
+      else etcd_digest_checksum }}
     url: "{{ etcd_download_url }}"
     unarchive: "{{ etcd_deployment_type == 'host' }}"
     owner: "root"
@@ -1135,7 +1137,7 @@ downloads:
     container: true
     repo: "{{ dashboard_image_repo }}"
     tag: "{{ dashboard_image_tag }}"
-    sha256: "{{ dashboard_digest_checksum | default(None) }}"
+    sha256: "{{ dashboard_digest_checksum }}"
     groups:
       - kube_control_plane
 
@@ -1144,7 +1146,7 @@ downloads:
     container: true
     repo: "{{ dashboard_metrics_scraper_repo }}"
     tag: "{{ dashboard_metrics_scraper_tag }}"
-    sha256: "{{ dashboard_digest_checksum | default(None) }}"
+    sha256: "{{ dashboard_digest_checksum }}"
     groups:
       - kube_control_plane
 

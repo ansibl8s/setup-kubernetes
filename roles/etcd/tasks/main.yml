@@ -9,7 +9,7 @@
 - name: Generate etcd certs
   include_tasks: "gen_certs_script.yml"
   when:
-    - cert_management | d('script') == "script"
+    - cert_management == "script"
   tags:
     - etcd-secrets
 

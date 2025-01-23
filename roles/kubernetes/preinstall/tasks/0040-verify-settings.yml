@@ -247,7 +247,7 @@
 
 - name: Stop if unknown cert_management
   assert:
-    that: cert_management | d('script') in ['script', 'none']
+    that: cert_management in ['script', 'none']
     msg: "cert_management can only be 'script' or 'none'"
   run_once: true
 
