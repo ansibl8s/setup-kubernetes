@@ -108,9 +108,6 @@ packet_rockylinux9-cilium:
   variables:
     RESET_CHECK: "true"
 
-packet_opensuse-docker-cilium:
-  extends: .packet_pr
-
 packet_ubuntu20-cilium-sep:
   extends: .packet_pr
 
