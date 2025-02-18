@@ -1,6 +1,8 @@
 {% if containerd_version is version('2.0.0', '>=') %}
+{% set cri_plugin = "io.containerd.cri.v1.runtime" %}
 version = 3
 {% else %}
+{% set cri_plugin = "io.containerd.grpc.v1.cri" %}
 version = 2
 {% endif %}
 
@@ -29,7 +31,7 @@ oom_score = {{ containerd_oom_score }}
   grpc_histogram = {{ containerd_metrics_grpc_histogram | lower }}
 
 [plugins]
-  [plugins."io.containerd.grpc.v1.cri"]
+  [plugins."{{ cri_plugin }}"]
     sandbox_image = "{{ pod_infra_image_repo }}:{{ pod_infra_image_tag }}"
     max_container_log_line_size = {{ containerd_max_container_log_line_size }}
     enable_unprivileged_ports = {{ containerd_enable_unprivileged_ports | lower }}
@@ -43,13 +45,17 @@ oom_score = {{ containerd_oom_score }}
     enable_cdi = true
     cdi_spec_dirs = ["/etc/cdi", "/var/run/cdi"]
 {% endif %}
+{% if containerd_version is version('2.0.0', '>=') %}
+    [plugins."io.containerd.cri.v1.images"]
+{% else %}
     [plugins."io.containerd.grpc.v1.cri".containerd]
+{% endif %}
       default_runtime_name = "{{ containerd_default_runtime }}"
       snapshotter = "{{ containerd_snapshotter }}"
       discard_unpacked_layers = {{ containerd_discard_unpacked_layers | lower }}
-      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+      [plugins."{{ cri_plugin }}".containerd.runtimes]
 {% for runtime in [containerd_runc_runtime] + containerd_additional_runtimes %}
-        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.{{ runtime.name }}]
+        [plugins."{{ cri_plugin }}".containerd.runtimes.{{ runtime.name }}]
           runtime_type = "{{ runtime.type }}"
           runtime_engine = "{{ runtime.engine }}"
           runtime_root = "{{ runtime.root }}"
@@ -57,7 +63,7 @@ oom_score = {{ containerd_oom_score }}
           base_runtime_spec = "{{ containerd_cfg_dir }}/{{ runtime.base_runtime_spec }}"
 {% endif %}
 
-          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.{{ runtime.name }}.options]
+          [plugins."{{ cri_plugin }}".containerd.runtimes.{{ runtime.name }}.options]
 {% for key, value in runtime.options.items() %}
 {% if value | string != "true" and value | string != "false" %}
             {{ key }} = "{{ value }}"
@@ -67,18 +73,18 @@ oom_score = {{ containerd_oom_score }}
 {% endfor %}
 {% endfor %}
 {% if kata_containers_enabled %}
-        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.kata-qemu]
+        [plugins."{{ cri_plugin }}".containerd.runtimes.kata-qemu]
           runtime_type = "io.containerd.kata-qemu.v2"
 {% endif %}
 {% if gvisor_enabled %}
-        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runsc]
+        [plugins."{{ cri_plugin }}".containerd.runtimes.runsc]
           runtime_type = "io.containerd.runsc.v1"
 {% endif %}
-    [plugins."io.containerd.grpc.v1.cri".registry]
+    [plugins."{{ cri_plugin }}".registry]
       config_path = "{{ containerd_cfg_dir }}/certs.d"
 {% for registry in containerd_registry_auth if registry['registry'] is defined %}
 {% if (registry['username'] is defined and registry['password'] is defined) or registry['auth'] is defined %}
-      [plugins."io.containerd.grpc.v1.cri".registry.configs."{{ registry['registry'] }}".auth]
+      [plugins."{{ cri_plugin }}".registry.configs."{{ registry['registry'] }}".auth]
 {% if registry['username'] is defined and registry['password'] is defined %}
         password = "{{ registry['password'] }}"
         username = "{{ registry['username'] }}"
@@ -104,3 +110,4 @@ oom_score = {{ containerd_oom_score }}
     sampling_ratio = {{ containerd_tracing_sampling_ratio }}
     service_name = "{{ containerd_tracing_service_name }}"
 {% endif %}
+
