@@ -3,9 +3,12 @@
 custom_cni_manifests: []
 
 custom_cni_chart_namespace: kube-system
+custom_cni_chart_create_namespace: true
 custom_cni_chart_release_name: ""
 custom_cni_chart_repository_name: ""
 custom_cni_chart_repository_url: ""
+custom_cni_chart_auth_name: ""
+custom_cni_chart_auth_password: ""
 custom_cni_chart_ref: ""
 custom_cni_chart_version: ""
 custom_cni_chart_values: {}

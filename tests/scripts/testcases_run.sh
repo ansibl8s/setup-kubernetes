@@ -28,6 +28,13 @@ export ANSIBLE_BECOME=true
 export ANSIBLE_BECOME_USER=root
 export ANSIBLE_INVENTORY=/tmp/inventory/
 
+cat > requirements.yaml <<EOF
+collections:
+- name: kubernetes.core
+  version: '>=5.1.0'
+  source: https://galaxy.ansible.com
+EOF
+
 make -C tests INVENTORY_DIR=${ANSIBLE_INVENTORY} create-${CI_PLATFORM} -s
 
 # Test collection build and install by installing our collection, emptying our repository, adding

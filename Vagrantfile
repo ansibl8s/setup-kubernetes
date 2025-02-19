@@ -282,6 +282,7 @@ Vagrant.configure("2") do |config|
       if i == $num_instances
         node.vm.provision "ansible" do |ansible|
           ansible.playbook = $playbook
+          ansible.galaxy_role_file = "requirements.yaml"
           ansible.compatibility_mode = "2.0"
           ansible.verbose = $ansible_verbosity
           ansible.become = true

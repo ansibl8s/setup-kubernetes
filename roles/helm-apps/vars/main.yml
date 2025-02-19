@@ -8,3 +8,6 @@ helm_defaults:
 helm_repository_defaults:
   binary_path: "{{ bin_dir }}/helm"
   force_update: true
+
+helm_auth_defaults:
+  binary_path: "{{ bin_dir }}/helm"

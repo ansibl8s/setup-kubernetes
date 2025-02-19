@@ -67,6 +67,37 @@ argument_specs:
             type: str
           url:
             type: str
+
+      auths:
+        type: list
+        elements: dict
+        description: |
+          List of dictionaries passed as arguments to
+          kubernetes.core.helm_registry_auth.
+        default: []
+        options:
+          state:
+            description:
+              - Desired state of the registry.
+              - If set to V(present) attempt to log in to the remote registry server using the URL specified in O(host).
+              - If set to V(absent) attempt to log out from the remote registry server using the URL specified in O(host).
+            default: present
+            choices: ['present', 'absent']
+            type: str
+          host:
+            description: Provide a URL for accessing the registry.
+            required: true
+            type: str
+          insecure:
+            description:
+              - Allow connections to SSL sites without certs.
+            default: false
+            type: bool
+          username:
+            type: str
+          password:
+            type: str
+
       release_common_opts:
         type: dict
         description: |
