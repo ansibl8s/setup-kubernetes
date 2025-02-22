@@ -565,6 +565,7 @@ kubelet_rotate_server_certificates: false
 # If set to true, kubelet errors if any of kernel tunables is different than kubelet defaults
 kubelet_protect_kernel_defaults: true
 
+kubelet_root_dir: /var/lib/kubelet
 # Set additional sysctl variables to modify Linux kernel variables, for example:
 # additional_sysctl:
 #  - { name: kernel.pid_max, value: 131072 }

@@ -159,7 +159,7 @@
         - services
 
 - name: Reset | gather mounted kubelet dirs
-  shell: set -o pipefail && mount | grep /var/lib/kubelet/ | awk '{print $3}' | tac
+  shell: set -o pipefail && mount | grep {{ kubelet_root_dir }}/ | awk '{print $3}' | tac
   args:
     executable: /bin/bash
   check_mode: false
@@ -241,23 +241,23 @@
     - enable_nodelocaldns | default(false) | bool
     - nodelocaldns_device.stat.exists
 
-- name: Reset | Check whether /var/lib/kubelet directory exists
+- name: Reset | Check whether {{ kubelet_root_dir }} directory exists
   stat:
-    path: /var/lib/kubelet
+    path: "{{ kubelet_root_dir }}"
     get_attributes: false
     get_checksum: false
     get_mime: false
   register: var_lib_kubelet_directory
 
-- name: Reset | Find files/dirs with immutable flag in /var/lib/kubelet
-  command: lsattr -laR /var/lib/kubelet/
+- name: Reset | Find files/dirs with immutable flag in {{ kubelet_root_dir }}
+  command: lsattr -laR {{ kubelet_root_dir }}/
   become: true
   register: var_lib_kubelet_files_dirs_w_attrs
   changed_when: false
   no_log: true
   when: var_lib_kubelet_directory.stat.exists
 
-- name: Reset | Remove immutable flag from files/dirs in /var/lib/kubelet
+- name: Reset | Remove immutable flag from files/dirs in {{ kubelet_root_dir }}
   file:
     path: "{{ filedir_path }}"
     state: touch
@@ -277,7 +277,7 @@
     state: absent
   with_items:
     - "{{ kube_config_dir }}"
-    - /var/lib/kubelet
+    - "{{ kubelet_root_dir }}"
     - "{{ containerd_storage_dir }}"
     - "{{ ansible_env.HOME | default('/root') }}/.kube"
     - "{{ ansible_env.HOME | default('/root') }}/.helm"

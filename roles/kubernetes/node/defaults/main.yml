@@ -110,7 +110,7 @@ loadbalancer_apiserver_pod_name: "{% if loadbalancer_apiserver_type == 'nginx' %
 # A port range to reserve for services with NodePort visibility.
 # Inclusive at both ends of the range.
 kube_apiserver_node_port_range: "30000-32767"
-
+kubelet_root_dir: /var/lib/kubelet
 # Configure the amount of pods able to run on single node
 # default is equal to application default
 kubelet_max_pods: 110

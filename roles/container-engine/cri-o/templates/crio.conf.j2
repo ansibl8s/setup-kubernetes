@@ -327,7 +327,7 @@ insecure_registries = {{ crio_insecure_registries }}
 default_transport = "docker://"
 
 # The path to a file containing credentials necessary for pulling images from
-# secure registries. The file is similar to that of /var/lib/kubelet/config.json
+# secure registries. The file is similar to that of {{ kubelet_root_dir }}/config.json
 global_auth_file = "/etc/crio/config.json"
 
 # The image used to instantiate infra containers.
@@ -335,7 +335,7 @@ global_auth_file = "/etc/crio/config.json"
 pause_image = "{{ crio_pause_image }}"
 
 # The path to a file containing credentials specific for pulling the pause_image from
-# above. The file is similar to that of /var/lib/kubelet/config.json
+# above. The file is similar to that of {{ kubelet_root_dir }}/config.json
 # This option supports live configuration reload.
 pause_image_auth_file = ""
 

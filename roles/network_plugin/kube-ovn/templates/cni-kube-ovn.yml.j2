@@ -517,7 +517,7 @@ spec:
             path: /lib/modules
         - name: shared-dir
           hostPath:
-            path: /var/lib/kubelet/pods
+            path: {{ kubelet_root_dir }}/pods
         - name: systemid
           hostPath:
             path: /etc/origin/openvswitch

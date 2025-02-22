@@ -3,7 +3,7 @@
   lineinfile:
     path: "{{ kube_config_dir }}/kubelet.conf"
     regexp: '^    client-certificate-data: '
-    line: '    client-certificate: /var/lib/kubelet/pki/kubelet-client-current.pem'
+    line: "    client-certificate: {{ kubelet_root_dir }}/pki/kubelet-client-current.pem"
     backup: true
   notify:
     - "Control plane | reload kubelet"
@@ -12,7 +12,7 @@
   lineinfile:
     path: "{{ kube_config_dir }}/kubelet.conf"
     regexp: '^    client-key-data: '
-    line: '    client-key: /var/lib/kubelet/pki/kubelet-client-current.pem'
+    line: "    client-key: {{ kubelet_root_dir }}/pki/kubelet-client-current.pem"
     backup: true
   notify:
     - "Control plane | reload kubelet"
