@@ -125,7 +125,7 @@ function register_container_images() {
 
 	tar -zxvf ${IMAGE_TAR_FILE}
 
-	if [ "${create_registry}" ]; then
+	if ${create_registry}; then
 		sudo ${runtime} load -i ${IMAGE_DIR}/registry-latest.tar
 		set +e
 
