@@ -5,7 +5,7 @@
 Container image collecting script for offline deployment
 
 This script has two features:
-(1) Get container images from an environment which is deployed online, or set IMAGES_FROM_FILE
+(1) Get container images from an environment which is deployed online, or set `IMAGES_FROM_FILE`
     environment variable to get images from a file (e.g. temp/images.list after running the
     ./generate_list.sh script).
 (2) Deploy local container registry and register the container images to the registry.
