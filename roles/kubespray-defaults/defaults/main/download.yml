@@ -298,7 +298,7 @@ nodelocaldns_version: "1.22.28"
 nodelocaldns_image_repo: "{{ kube_image_repo }}/dns/k8s-dns-node-cache"
 nodelocaldns_image_tag: "{{ nodelocaldns_version }}"
 
-dnsautoscaler_version: v1.8.8
+dnsautoscaler_version: v1.9.0
 dnsautoscaler_image_repo: "{{ kube_image_repo }}/cpa/cluster-proportional-autoscaler"
 dnsautoscaler_image_tag: "{{ dnsautoscaler_version }}"
 
