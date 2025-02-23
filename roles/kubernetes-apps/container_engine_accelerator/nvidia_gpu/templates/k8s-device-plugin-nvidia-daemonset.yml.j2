@@ -34,7 +34,7 @@ spec:
       volumes:
       - name: device-plugin
         hostPath:
-          path: /var/lib/kubelet/device-plugins
+          path: {{ kubelet_root_dir }}/device-plugins
       - name: dev
         hostPath:
           path: /dev

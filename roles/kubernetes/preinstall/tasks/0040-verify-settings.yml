@@ -107,6 +107,12 @@
     - kube_network_plugin not in ['calico', 'none']
     - ipv4_stack | bool
 
+- name: "Kubelet: check root-dir is not set as custom-flag too"
+  assert:
+    that: "{{item.split('=')[0] != '--root-dir'}}"
+    fail_msg: "kubelet root dir is set via `kubelet_root_dir` variable. Remove it from the kubelet_custom_flags and set the new var"
+  loop: "{{kubelet_custom_flags | d([])}}"
+
 - name: Stop if ip var does not match local ips
   assert:
     that: (ip in ansible_all_ipv4_addresses) or (ip in ansible_all_ipv6_addresses)

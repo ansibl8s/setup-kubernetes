@@ -25,7 +25,7 @@ spec:
           args:
             - "--v=5"
             - "--csi-address=/csi/csi.sock"
-            - "--kubelet-registration-path=/var/lib/kubelet/plugins/pd.csi.storage.gke.io/csi.sock"
+            - "--kubelet-registration-path={{ kubelet_root_dir }}/plugins/pd.csi.storage.gke.io/csi.sock"
           lifecycle:
             preStop:
               exec:
@@ -52,7 +52,7 @@ spec:
             - "--run-controller-service=false"
           volumeMounts:
             - name: kubelet-dir
-              mountPath: /var/lib/kubelet
+              mountPath: {{ kubelet_root_dir }}
               mountPropagation: "Bidirectional"
             - name: plugin-dir
               mountPath: /csi
@@ -73,15 +73,15 @@ spec:
       volumes:
         - name: registration-dir
           hostPath:
-            path: /var/lib/kubelet/plugins_registry/
+            path: {{ kubelet_root_dir }}/plugins_registry/
             type: Directory
         - name: kubelet-dir
           hostPath:
-            path: /var/lib/kubelet
+            path: {{ kubelet_root_dir }}
             type: Directory
         - name: plugin-dir
           hostPath:
-            path: /var/lib/kubelet/plugins/pd.csi.storage.gke.io/
+            path: {{ kubelet_root_dir }}/plugins/pd.csi.storage.gke.io/
             type: DirectoryOrCreate
         - name: device-dir
           hostPath:

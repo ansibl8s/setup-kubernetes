@@ -31,7 +31,7 @@ spec:
             - name: ADDRESS
               value: /csi/csi.sock
             - name: DRIVER_REG_SOCK_PATH
-              value: /var/lib/kubelet/plugins/cinder.csi.openstack.org/csi.sock
+              value: {{ kubelet_root_dir }}/plugins/cinder.csi.openstack.org/csi.sock
             - name: KUBE_NODE_NAME
               valueFrom:
                 fieldRef:
@@ -81,7 +81,7 @@ spec:
             - name: socket-dir
               mountPath: /csi
             - name: kubelet-dir
-              mountPath: /var/lib/kubelet
+              mountPath: {{ kubelet_root_dir }}
               mountPropagation: "Bidirectional"
             - name: pods-probe-dir
               mountPath: /dev
@@ -107,15 +107,15 @@ spec:
       volumes:
         - name: socket-dir
           hostPath:
-            path: /var/lib/kubelet/plugins/cinder.csi.openstack.org
+            path: {{ kubelet_root_dir }}/plugins/cinder.csi.openstack.org
             type: DirectoryOrCreate
         - name: registration-dir
           hostPath:
-            path: /var/lib/kubelet/plugins_registry/
+            path: {{ kubelet_root_dir }}/plugins_registry/
             type: Directory
         - name: kubelet-dir
           hostPath:
-            path: /var/lib/kubelet
+            path: {{ kubelet_root_dir }}
             type: Directory
         - name: pods-probe-dir
           hostPath:
