@@ -7,7 +7,7 @@ kubelet_address: "{{ main_ips | join(',') }}"
 kubelet_bind_address: "{{ main_ip | default('::') }}"
 
 # resolv.conf to base dns config
-kube_resolv_conf: "/etc/resolv.conf"
+kube_resolv_conf: "{{ '/run/systemd/resolve/resolv.conf' if 'systemd-resolved' in active_dns_services else '/etc/resolv.conf' }}"
 
 # Set to empty to avoid cgroup creation
 kubelet_enforce_node_allocatable: "\"\""
