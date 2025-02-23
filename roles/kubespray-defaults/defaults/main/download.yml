@@ -294,7 +294,7 @@ coredns_image_is_namespaced: "{{ (coredns_version is version('v1.7.1', '>=')) }}
 coredns_image_repo: "{{ kube_image_repo }}{{ '/coredns/coredns' if (coredns_image_is_namespaced | bool) else '/coredns' }}"
 coredns_image_tag: "{{ coredns_version if (coredns_image_is_namespaced | bool) else (coredns_version | regex_replace('^v', '')) }}"
 
-nodelocaldns_version: "1.22.28"
+nodelocaldns_version: "1.25.0"
 nodelocaldns_image_repo: "{{ kube_image_repo }}/dns/k8s-dns-node-cache"
 nodelocaldns_image_tag: "{{ nodelocaldns_version }}"
 
