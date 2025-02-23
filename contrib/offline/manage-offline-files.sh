@@ -41,7 +41,7 @@ fi
 
 sudo "${runtime}" container inspect nginx >/dev/null 2>&1
 if [ $? -ne 0 ]; then
-    sudo "${runtime}" run \
+    sudo -E "${runtime}" run \
         --restart=always -d -p ${NGINX_PORT}:80 \
         --volume "${OFFLINE_FILES_DIR}":/usr/share/nginx/html/download \
         --volume "${CURRENT_DIR}"/nginx.conf:/etc/nginx/nginx.conf \
