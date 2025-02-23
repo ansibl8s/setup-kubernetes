@@ -20,7 +20,11 @@ data:
     # In case you want to use TLS in etcd, uncomment the 'ca-file' line
     # and create a kubernetes secret by following the tutorial in
     # https://cilium.link/etcd-config
+{% if cilium_version | regex_replace('v') is version('1.17.0', '>=') %}
+    trusted-ca-file: "{{ cilium_cert_dir }}/ca_cert.crt"
+{% else %}
     ca-file: "{{ cilium_cert_dir }}/ca_cert.crt"
+{% endif %}
 
     # In case you want client to server authentication, uncomment the following
     # lines and create a kubernetes secret by following the tutorial in
