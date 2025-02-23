@@ -279,7 +279,7 @@ external_openstack_cloud_controller_image_repo: "{{ kube_image_repo }}/provider-
 external_openstack_cloud_controller_image_tag: "v1.31.1"
 
 kube_vip_image_repo: "{{ github_image_repo }}/kube-vip/kube-vip"
-kube_vip_image_tag: v0.8.0
+kube_vip_image_tag: v0.8.9
 nginx_image_repo: "{{ docker_image_repo }}/library/nginx"
 nginx_image_tag: 1.27.4-alpine
 haproxy_image_repo: "{{ docker_image_repo }}/library/haproxy"
