@@ -2,6 +2,10 @@
 - name: Add Helm repositories
   kubernetes.core.helm_repository: "{{ helm_repository_defaults | combine(item) }}"  # noqa args[module]
   loop: "{{ repositories }}"
+  when:
+    - repositories is defined
+    - repositories != []
+    - repositories | selectattr("name", "truthy") | list | length > 0
 
 - name: Update Helm repositories
   kubernetes.core.helm:
@@ -11,8 +15,18 @@
     release_namespace: kube-system
     update_repo_cache: true
   when:
+    - repositories is defined
     - repositories != []
+    - repositories | selectattr("name", "truthy") | list | length > 0
     - helm_update
+
+- name: Login to remote registry
+  kubernetes.core.helm_registry_auth: "{{ helm_auth_defaults | combine(item) }}"  # noqa args[module]
+  loop: "{{ auths }}"
+  when:
+    - auths is defined
+    - auths != []
+    - auths | selectattr("username", "truthy") | list | length > 0
 
 - name: Install Helm Applications
   kubernetes.core.helm: "{{ helm_defaults | combine(release_common_opts, item) }}"  # noqa args[module]

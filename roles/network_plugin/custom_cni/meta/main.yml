@@ -11,10 +11,15 @@ dependencies:
     releases:
       - name: "{{ custom_cni_chart_release_name }}"
         namespace: "{{ custom_cni_chart_namespace }}"
+        create_namespace: "{{ custom_cni_chart_create_namespace | bool }}"
         chart_ref: "{{ custom_cni_chart_ref }}"
         chart_version: "{{ custom_cni_chart_version }}"
         wait: true
         values: "{{ custom_cni_chart_values }}"
+    auths:
+      - host: "{{ custom_cni_chart_ref.split('/')[2] }}"
+        username: "{{ custom_cni_chart_auth_username }}"
+        password: "{{ custom_cni_chart_auth_password }}"
     repositories:
       - name: "{{ custom_cni_chart_repository_name }}"
         url: "{{ custom_cni_chart_repository_url }}"

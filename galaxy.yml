@@ -19,7 +19,7 @@ dependencies:
   ansible.netcommon: '>=5.3.0'
   ansible.posix: '>=1.5.4'
   community.docker: '>=3.11.0'
-  kubernetes.core: '>=2.4.2'
+  kubernetes.core: '>=5.1.0'
 manifest:
   directives:
     - recursive-exclude tests **
